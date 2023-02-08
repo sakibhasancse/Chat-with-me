@@ -1,0 +1,6 @@
+.home-button button {
+  width: 100%;
+  border-radius: none !important;
+  border-color: #ffffff;
+  box-shadow: none;
+}
