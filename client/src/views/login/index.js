@@ -17,29 +17,25 @@ const Login = () => {
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [values, setValues] = useState({ phone_number: "", password: "" });
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (values) => {
     setLoading(true);
-    event.preventDefault();
     const errors = validateInputFields(values);
     if (errors.length) setErrors(errors);
     else {
       setErrors({});
       const response = await apiRequest({
         method: "POST",
-        path: "api/v1/user/signin/",
+        path: "/auth/login",
         data: values,
       });
-
-      console.log({ response });
-
+      console.log({ response })
       if (response.error) {
         setErrors({ error: response.error });
       } else {
         const from = location.state?.from?.pathname || "/";
-        Cookie.set("token", response.data || "token");
-        auth.signIn(response.data || "token", () => {
+        console.log('s', auth)
+        auth.signIn(response.data.tokens || "token", () => {
           navigate(from, { replace: true });
         });
       }

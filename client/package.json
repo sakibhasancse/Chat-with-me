@@ -4,8 +4,6 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
-    "@okta/okta-auth-js": "^7.2.0",
-    "@okta/okta-react": "^6.7.0",
     "@react-hook/window-size": "^3.1.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -14,6 +12,7 @@
     "axios": "^1.2.2",
     "craco": "^0.0.3",
     "js-cookie": "^3.0.1",
+    "jwt-decode": "^3.1.2",
     "mobx": "^6.7.0",
     "mobx-react": "^7.6.0",
     "react": "^18.2.0",
@@ -21,6 +20,9 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.1",
     "react-scripts": "^5.0.1",
+    "simple-peer": "^9.11.1",
+    "socket.io-client": "^4.6.0",
+    "styled-components": "^5.3.6",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

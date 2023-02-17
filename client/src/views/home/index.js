@@ -27,7 +27,6 @@ const Home = () => {
 
   return (
     <div>
-      <TopNavBar />
       <Content style={{ padding: '50px' }}>
         <Row>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
@@ -137,7 +136,6 @@ const Home = () => {
           ]}
         />
       </Content>
-      <Footer />
     </div >
   );
 };

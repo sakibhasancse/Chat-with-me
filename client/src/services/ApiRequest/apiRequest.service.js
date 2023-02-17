@@ -10,7 +10,7 @@ const apiRequest = async ({
 }) => {
   const options = {
     method,
-    url: url ? url : `${getBaseUrl()}/${path}`,
+    url: url ? url : `${getBaseUrl()}${path}`,
     data,
     headers: headers || { Authorization: getAuthToken() },
   };

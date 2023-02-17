@@ -2,18 +2,20 @@ import React from "react";
 import { Menu, Avatar } from "antd";
 import { UserOutlined, CodeOutlined, LogoutOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
-const RightMenu = ({ mode }, props) => {
+const RightMenu = ({ mode }) => {
+  const auth = useAuth();
   return (
     <>
       {
-        props?.isLogin ? (
+        auth?.user ? (
           <Menu mode={mode} >
             <Menu.SubMenu
               title={
                 <>
                   <Avatar icon={<UserOutlined />} />
-                  <span className="username">John Doe</span>
+                  <span className="username">{auth.user.name}</span>
                 </>
               }
             >
@@ -22,9 +24,10 @@ const RightMenu = ({ mode }, props) => {
           </Menu.Item>
               <Menu.Item key="about-us">
                 <UserOutlined /> Profile
-          </Menu.Item>
-              <Menu.Item key="log-out">
-                <LogoutOutlined /> Logout
+          </Menu.Item >
+              <Menu.Item key="log-out" onClick={() => auth.logOut()}>
+                <LogoutOutlined />
+            Logout
           </Menu.Item>
             </Menu.SubMenu>
           </Menu >
