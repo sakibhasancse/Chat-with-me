@@ -21,6 +21,7 @@ const InboxProvider = ({ children }) => {
     socket.on("error", (id) => {
       console.log('hello', id)
     });
+
     socket.on("disconnect", (reason) => {
       if (reason === "io server disconnect") {
         // the disconnection was initiated by the server, you need to reconnect manually
@@ -28,10 +29,17 @@ const InboxProvider = ({ children }) => {
       }
       // else the socket will automatically try to reconnect
     });
+
+
   }, [])
 
+  const sendMessage = (value) => {
+    console.log({ value })
+    socket.emit("msgUser", { name, to: otherUser, msg: value, sender: name });
+  }
+
   return (
-    <InboxContext.Provider value={{}}>
+    <InboxContext.Provider value={{ sendMessage }}>
       {children}
     </InboxContext.Provider>
   )

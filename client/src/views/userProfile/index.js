@@ -9,10 +9,10 @@ const UserProfile = () => {
   const navigate = useNavigate()
   const { username } = useParams()
 
-  const initiateMessage = async ({ username }) => {
-    const conversation = await createChat(username)
-    console.log({ conversation })
-    if (conversation?._id) navigate.push(`/inbox/${conversation._id}`)
+  const initiateMessage = async () => {
+    const conversation = await createChat('63d5506d67a2310bda2645ca')
+    console.log({ conversation, username })
+    // if (conversation?._id) navigate.push(`/inbox/${conversation._id}`)
   }
 
   return (<div style={{ padding: "50px" }}>

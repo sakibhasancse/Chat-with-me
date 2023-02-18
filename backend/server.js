@@ -32,5 +32,11 @@ const io = new Server(server, {
 });
 io.on('connection', (socket) => {
   console.log(`New connection: ${socket.id}`);
+  socket.emit("me", socket.id)
+
+  socket.on('msgUser', ({ name, to, msg, sender }) => {
+    console.log('ss', { name, to, msg, sender})
+    io.to(to).emit("msgRcv", { name, msg, sender });
+  })
 })
 export default app

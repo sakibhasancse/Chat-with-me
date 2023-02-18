@@ -1,9 +1,10 @@
 import express from 'express'
-import { CategoryRouters, userRoutes } from './modules/index.js'
+import { CategoryRouters, chatRoutes, userRoutes,  } from './modules/index.js'
 
 const router = express.Router()
 
 router.use('/api/auth', userRoutes)
+router.use('/api', chatRoutes)
 router.use('/api/category', CategoryRouters)
 router.use('/api', (req, res) =>
   res.status(200).json({ status: 'sucess', message: 'API is working' })

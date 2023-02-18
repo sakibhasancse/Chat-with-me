@@ -1,4 +1,5 @@
 import CategoryRouters from './category/index.js'
 import userRoutes from './users/index.js'
+import chatRoutes from './chat/index.js'
 
-export { userRoutes, CategoryRouters }
+export { chatRoutes, CategoryRouters, userRoutes, }

@@ -36,9 +36,11 @@ export const checkAuth = async (req, res, next) => {
       return next()
 
     const token = authorization.replace('Bearer ', '')
+    console.log({ token })
     if (token) {
       const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
       const user = await userHelper.getAUser(decoded?.userId)
+      console.log({ token, user, decoded })
       req.user = { userId: user._id, ...user }
     }
     return next()

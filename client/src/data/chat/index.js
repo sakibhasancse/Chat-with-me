@@ -7,10 +7,10 @@ export const getChatList = async () => {
   return response?.data || {}
 }
 
-export const createChat = async (userName) => {
+export const createChat = async (userId) => {
   const response = await apiRequest({
     method: 'POST', path: "/chat", data: {
-      userName
+      userId
     }
   })
   console.log({ response })

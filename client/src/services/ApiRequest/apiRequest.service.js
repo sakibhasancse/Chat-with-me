@@ -12,7 +12,7 @@ const apiRequest = async ({
     method,
     url: url ? url : `${getBaseUrl()}${path}`,
     data,
-    headers: headers || { Authorization: getAuthToken() },
+    headers: headers || { Authorization: `Bearer ${getAuthToken()}` },
   };
 
   try {
