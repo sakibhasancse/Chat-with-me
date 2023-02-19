@@ -1,13 +1,35 @@
-import React from 'react';
-import ChatBox from './chat';
+import { Col, Row } from 'antd';
+import { Content } from 'antd/es/layout/layout';
+import React, { useState } from 'react';
+import Chats from './Chats';
+import ChatBox from './messages';
 
-const index = () => {
+const inbox = () => {
+  const [messages, setMessages] = useState([{
+    type: 'sent',
+    content: "Hello developer"
+  },
+  {
+    type: 'receive',
+    content: "Hello developer"
+  }
+    , {
+    type: 'sent',
+    content: "Hello developer"
+  }])
+
   return (
-    <div>
-      Hello dev
-      <ChatBox />
-    </div>
+    <Content style={{ padding: '50px' }}>
+      <Row>
+        <Col xs={2} sm={4} md={6} lg={8} xl={10}>
+          <Chats setMessages={setMessages} />
+        </Col>
+        <Col xs={2} sm={4} md={6} lg={8} xl={10}>
+          <ChatBox messages={messages} setMessages={setMessages} />
+        </Col>
+      </Row>
+    </Content>
   );
 }
 
-export default index;
+export default inbox;

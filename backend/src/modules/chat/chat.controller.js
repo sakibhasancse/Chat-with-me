@@ -11,7 +11,7 @@ export const createChat = async (req, res, next) => {
     const { body = {}, user = {} } = req
     appHelper.checkRequiredFields(['userId'], body)
     const participantUser = await userHelper.getAUser({ _id: body.userId })
-    console.log({ user, participantUser })
+
     if (!participantUser) throw new CustomError(404, 'Participant user not found')
 
     const alreadyExistsUser = await ChatCollection.findOne({
@@ -28,7 +28,6 @@ export const createChat = async (req, res, next) => {
         }
       }
     })
-    console.log({ alreadyExistsUser })
 
     if (alreadyExistsUser) {
       return res.status(200).json(alreadyExistsUser)
@@ -45,10 +44,8 @@ export const createChat = async (req, res, next) => {
         }
       ]
     }
-    console.log({ newChat })
     const chat = await ChatCollection.create(newChat)
-    console.log({ chat })
-    if (!_.size(user)) throw new CustomError(400, 'Failed to create the chat')
+    if (!_.size(chat)) throw new CustomError(400, 'Failed to create the chat')
 
     res.status(201).json(chat)
   } catch (error) {

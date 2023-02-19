@@ -6,7 +6,6 @@ import { API_URL } from "./inbox-helper";
 export const socket = io(API_URL);
 
 const InboxProvider = ({ children }) => {
-
   const myVideo = useRef();
   useEffect(() => {
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((currentStream) => {

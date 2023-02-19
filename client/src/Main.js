@@ -31,7 +31,7 @@ const Main = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/feed" element={<Feed />} />
-            <Route path="/inbox" element={<Inbox />} />
+            <Route path="/inbox/*" element={<Inbox />} />
             <Route path="/user/:username" element={<UserProfile />} />
             {/* Your private router */}
             <Route

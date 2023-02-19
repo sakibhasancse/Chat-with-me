@@ -1,13 +1,23 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { Card, Modal, Button, Input, notification, Avatar } from "antd";
 const { Search } = Input;
 import Msg_Illus from '../../../assets/images/msg_illus.svg'
 import InboxContext from "../../../context/Inbox/inboxContext";
+import { useLocation } from "react-router";
 
-const ChatBox = ({ messages = [] }) => {
+const ChatBox = ({ messages = [], setMessages }) => {
   const { sendNewMessage } = useContext(InboxContext);
-
   const [message, setMessage] = useState('')
+  const [chatId, setChatId] = useState('')
+
+  let { pathname } = useLocation();
+  const dummy = useRef();
+
+  useEffect(() => {
+    const currentChatId = pathname.split('/')[2] || ''
+    setChatId(currentChatId)
+  }, [pathname])
+
 
   const handleMessage = (value) => {
     if (value) {
@@ -19,6 +29,10 @@ const ChatBox = ({ messages = [] }) => {
     }
     setMessage('')
   }
+
+  useEffect(() => {
+    if (dummy?.current) dummy.current.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
     <>
