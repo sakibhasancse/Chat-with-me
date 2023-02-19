@@ -3,28 +3,28 @@ import { Avatar, Divider, List, Skeleton } from 'antd';
 import { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useNavigate } from 'react-router';
+import InboxContext from '../../../context/Inbox/inboxContext';
+import { getChatList } from '../../../data/chat';
 import ChatRightButton from './ChatRightButton';
 
 const Chats = ({ setMessages }) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
 
+  const { chatList, setChatList } = useContext(InboxContext);
+
   const navigator = useNavigate()
 
-  const loadMoreData = () => {
+  const loadMoreData = async () => {
     if (loading) {
       return;
     }
     setLoading(true);
-    fetch('https://randomuser.me/api/?results=10&inc=name,gender,email,nat,picture&noinfo')
-      .then((res) => res.json())
-      .then((body) => {
-        setData([...data, ...body.results]);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
+    const response = getChatList()
+    if (response) {
+      setData([...data, ...body.results]);
+    }
+    setLoading(false);
   };
 
   const handleMessage = (values) => {
