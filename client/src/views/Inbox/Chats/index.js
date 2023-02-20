@@ -1,6 +1,6 @@
 
 import { Avatar, Divider, List, Skeleton } from 'antd';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useNavigate } from 'react-router';
 import InboxContext from '../../../context/Inbox/inboxContext';
@@ -9,21 +9,17 @@ import ChatRightButton from './ChatRightButton';
 
 const Chats = ({ setMessages }) => {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
 
-  const { chatList, setChatList } = useContext(InboxContext);
+  const { chatList = [], setChatList } = useContext(InboxContext);
 
   const navigator = useNavigate()
 
   const loadMoreData = async () => {
-    if (loading) {
-      return;
-    }
+    if (loading) return;
     setLoading(true);
-    const response = getChatList()
-    if (response) {
-      setData([...data, ...body.results]);
-    }
+
+    const response = await getChatList()
+    if (response) setChatList((oldChatList) => [...oldChatList, ...response]);
     setLoading(false);
   };
 
@@ -48,9 +44,9 @@ const Chats = ({ setMessages }) => {
       }}
     >
       <InfiniteScroll
-        dataLength={data.length}
+        dataLength={chatList.length}
         next={loadMoreData}
-        hasMore={data.length < 50}
+        hasMore={chatList.length < 50}
         loader={
           <Skeleton
             avatar
@@ -64,13 +60,13 @@ const Chats = ({ setMessages }) => {
         scrollableTarget="scrollableDiv"
       >
         <List
-          dataSource={data}
+          dataSource={chatList}
           renderItem={(item) => (
             <List.Item key={item.email}>
               <List.Item.Meta
-                avatar={<Avatar src={item.picture.large} />}
-                title={<div onClick={() => handleMessage(item)}>{item.name.last}</div>}
-                description={item.email}
+                avatar={<Avatar src={item.picture?.large} />}
+                title={<div onClick={() => handleMessage(item)}>{item.name?.last}</div>}
+                description={item.lastMessage}
               />
               <ChatRightButton />
             </List.Item>

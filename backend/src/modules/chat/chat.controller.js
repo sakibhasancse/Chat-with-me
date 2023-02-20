@@ -56,13 +56,35 @@ export const createChat = async (req, res, next) => {
 export const GetChats = async (req, res, next) => {
   try {
     const { user = {} } = req
-    const chatList = await ChatCollection.find({
-      participants: {
-        $elemMatch: {
-          userId: user.userId
+    const chatList = await ChatCollection.aggregate([{
+      $match: {
+        participants: {
+          $elemMatch: {
+            userId: user.userId
+          }
         }
       }
-    })
+    },
+    {
+      $lookup: {
+        from: "messages",
+        let: { chatId: '$_id' },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [{ $eq: ['$$chatId', '$chatId'] }]
+              }
+            }
+          },
+          { $sort: { createdAt: -1 } },
+          { $limit: 10 }
+        ],
+        as: "messages",
+      }
+
+    }])
+    console.log({ user, chatList })
 
     res.status(200).json(chatList)
   } catch (error) {

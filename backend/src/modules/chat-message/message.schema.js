@@ -15,7 +15,7 @@ const messageSchema = new Schema(
       default: false
     },
     chatId: {
-      type: String,
+      type: Schema.Types.ObjectId,
       require: true
     }
   },

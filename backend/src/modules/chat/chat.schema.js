@@ -12,7 +12,8 @@ const chatSchema = new Schema(
       userId: {
         type: String,
         require: true
-      }
+      },
+      _id: 0
     }],
     lastMessage: {
       type: String

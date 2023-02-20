@@ -25,7 +25,7 @@ const RightMenu = ({ mode }) => {
               <Menu.Item key="about-us">
                 <UserOutlined /> Profile
           </Menu.Item >
-              <Menu.Item key="log-out" onClick={() => auth.logOut()}>
+              <Menu.Item key="log-out" onClick={() => auth.signOut()}>
                 <LogoutOutlined />
             Logout
           </Menu.Item>

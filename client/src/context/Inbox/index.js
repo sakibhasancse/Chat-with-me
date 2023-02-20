@@ -1,11 +1,13 @@
 import InboxContext from "./inboxContext"
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
 import { API_URL } from "./inbox-helper";
 export const socket = io(API_URL);
 
 const InboxProvider = ({ children }) => {
+  const [chatList, setChatList] = useState([])
+
   const myVideo = useRef();
   useEffect(() => {
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((currentStream) => {
@@ -38,7 +40,7 @@ const InboxProvider = ({ children }) => {
   }
 
   return (
-    <InboxContext.Provider value={{ sendMessage }}>
+    <InboxContext.Provider value={{ sendMessage, chatList, setChatList }}>
       {children}
     </InboxContext.Provider>
   )
