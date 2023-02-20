@@ -1,4 +1,4 @@
-import { ChatCollection } from "./chat.model"
+import { ChatCollection } from "./chat.model.js"
 
 export const getAChat = async (query = {}) => {
   const chat = await ChatCollection.findOne(query)
