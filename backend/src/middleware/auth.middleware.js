@@ -64,7 +64,7 @@ export const checkRefreshToken = async (req, res, next) => {
     if (token) {
       const decoded = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET)
       const user = await userHelper.getAUser(decoded?.userId)
-      req.user = { userId: user._id, ...user }
+      req.user = { success: true, userId: user._id, ...user }
     }
     return next()
   } catch (error) {

@@ -8,9 +8,10 @@ import InboxContext from "../../../context/Inbox/inboxContext";
 import { useLocation } from "react-router";
 import { AuthContext } from "../../../context/AuthContext";
 import { getMessages } from '../../../data/chat'
+import ChatTopBar from "../ChatTopBar";
 
 const ChatBox = () => {
-  const { sendNewMessage, messages = [], setMessages } = useContext(InboxContext);
+  const { sendNewMessage, messages = [], setMessages, setCurrentChatId } = useContext(InboxContext);
   const { user } = useContext(AuthContext);
 
   const [message, setMessage] = useState('')
@@ -26,9 +27,10 @@ const ChatBox = () => {
         if (size(response)) {
           setMessages(response)
         }
-      })  
+      })
     }
     setChatId(currentChatId)
+    setCurrentChatId(currentChatId)
   }, [pathname])
 
 
@@ -44,7 +46,9 @@ const ChatBox = () => {
   }, [messages]);
 
   return (
+
     <div style={{ padding: "20px" }}>
+      <ChatTopBar />
       {
         messages.length ? (
           <div className="msg_flex">

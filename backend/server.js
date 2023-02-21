@@ -31,12 +31,51 @@ const io = new Server(server, {
   }
 });
 io.on('connection', (socket) => {
-  console.log(`New connection: ${socket.id}`);
+  console.log(`New connection: ${socket.id}`, socket.data);
+  // console.log('socket', socket)
   socket.emit("me", socket.id)
 
+  socket.on('user-join', ({ userId }) => {
+    console.log(`A user joined userId-${userId}`);
+    socket.join(`userId-${userId}`);
+  });
+
+  socket.on('user-send-message', ({ name, toUserId, chatId, newMessage, fromUserId }) => {
+    socket
+      .to(`userId-${toUserId}`)
+      .emit('receive-message', {
+        chatId: chatId,
+        newMessage: newMessage,
+        name,
+        fromUserId
+      });
+  });
+
   socket.on('msgUser', ({ name, to, msg, sender }) => {
-    console.log('ss', { name, to, msg, sender})
+    console.log('ss', { name, to, msg, sender })
     io.to(to).emit("msgRcv", { name, msg, sender });
   })
+
+  socket.on("callUser", ({ userToCall, signalData, from, name }) => {
+    console.log({ userToCall, from, name })
+    io.to(userToCall).emit("callUser", {
+      signal: signalData,
+      from,
+      name,
+    });
+  });
+
+  socket.on("answerCall", (data) => {
+    console.log({ data })
+    socket.broadcast.emit("updateUserMedia", {
+      type: data.type,
+      currentMediaStatus: data.myMediaStatus,
+    });
+    io.to(data.to).emit("callAccepted", data);
+  });
+
+  socket.on("endCall", ({ id }) => {
+    io.to(id).emit("endCall");
+  });
 })
 export default app

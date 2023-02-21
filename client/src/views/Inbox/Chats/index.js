@@ -11,7 +11,7 @@ import { getChatList } from '../../../data/chat';
 import ChatRightButton from './ChatRightButton';
 
 const Chats = () => {
-  const { setMessages } = useContext(InboxContext)
+  const { setMessages, setOtherUsers } = useContext(InboxContext)
   const [loading, setLoading] = useState(false);
 
   const { chatList = [], setChatList } = useContext(InboxContext);
@@ -29,7 +29,6 @@ const Chats = () => {
 
   const handleMessage = (values) => {
     setMessages(values?.messages || [])
-    console.log({ values })
     navigator(`/inbox/${values._id}`)
   }
   console.log({ chatList })

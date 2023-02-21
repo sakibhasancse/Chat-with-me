@@ -174,6 +174,7 @@ export const GetChats = async (req, res, next) => {
         createdAt: 1,
       }
     }])
+    console.log({ user, chatList })
     res.status(200).json(chatList)
   } catch (error) {
     return next(error)
