@@ -1,13 +1,17 @@
 
 import { Avatar, Divider, List, Skeleton } from 'antd';
 import { useContext, useEffect, useState } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { useNavigate } from 'react-router';
+import { size } from 'lodash'
+import moment from 'moment'
+
+import InfiniteScroll from 'react-infinite-scroll-component';
 import InboxContext from '../../../context/Inbox/inboxContext';
 import { getChatList } from '../../../data/chat';
 import ChatRightButton from './ChatRightButton';
 
-const Chats = ({ setMessages }) => {
+const Chats = () => {
+  const { setMessages } = useContext(InboxContext)
   const [loading, setLoading] = useState(false);
 
   const { chatList = [], setChatList } = useContext(InboxContext);
@@ -19,16 +23,16 @@ const Chats = ({ setMessages }) => {
     setLoading(true);
 
     const response = await getChatList()
-    if (response) setChatList((oldChatList) => [...oldChatList, ...response]);
+    if (size(response)) setChatList((oldChatList) => [...oldChatList, ...response]);
     setLoading(false);
   };
 
   const handleMessage = (values) => {
-    setMessages(values)
+    setMessages(values?.messages || [])
     console.log({ values })
-    navigator('/inbox/sss')
+    navigator(`/inbox/${values._id}`)
   }
-
+  console.log({ chatList })
   useEffect(() => {
     loadMoreData();
   }, []);
@@ -45,7 +49,7 @@ const Chats = ({ setMessages }) => {
     >
       <InfiniteScroll
         dataLength={chatList.length}
-        next={loadMoreData}
+        // next={loadMoreData}
         hasMore={chatList.length < 50}
         loader={
           <Skeleton
@@ -62,11 +66,14 @@ const Chats = ({ setMessages }) => {
         <List
           dataSource={chatList}
           renderItem={(item) => (
-            <List.Item key={item.email}>
+            <List.Item key={item._id}>
               <List.Item.Meta
-                avatar={<Avatar src={item.picture?.large} />}
-                title={<div onClick={() => handleMessage(item)}>{item.name?.last}</div>}
-                description={item.lastMessage}
+                avatar={<Avatar src={item.participantOtherUsers[0]?.profileUrl} />}
+                title={<div onClick={() => handleMessage(item)}>{item.participantOtherUsers[0]?.name}</div>}
+                description={<div>
+                  <p>{item.lastMessage}</p>
+                  <h4>{moment(item.lastMessageAt).fromNow()}</h4>
+                </div>}
               />
               <ChatRightButton />
             </List.Item>

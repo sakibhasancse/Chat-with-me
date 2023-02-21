@@ -7,6 +7,7 @@ export const socket = io(API_URL);
 
 const InboxProvider = ({ children }) => {
   const [chatList, setChatList] = useState([])
+  const [messages, setMessages] = useState([])
 
   const myVideo = useRef();
   useEffect(() => {
@@ -30,17 +31,16 @@ const InboxProvider = ({ children }) => {
       }
       // else the socket will automatically try to reconnect
     });
-
-
   }, [])
 
-  const sendMessage = (value) => {
+  const sendNewMessage = (value) => {
     console.log({ value })
-    socket.emit("msgUser", { name, to: otherUser, msg: value, sender: name });
+    setMessages(oldMessage => [...oldMessage, value])
+    // socket.emit("msgUser", { name, to: otherUser, msg: value, sender: name });
   }
 
   return (
-    <InboxContext.Provider value={{ sendMessage, chatList, setChatList }}>
+    <InboxContext.Provider value={{ sendNewMessage, chatList, setChatList, setMessages, messages }}>
       {children}
     </InboxContext.Provider>
   )

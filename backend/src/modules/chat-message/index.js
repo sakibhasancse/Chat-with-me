@@ -4,7 +4,7 @@ import { getMessages, addMessage } from './message.controller.js'
 
 const router = express.Router()
 
-router.route('/message')
+router.route('/')
   .get(checkAuth, getMessages)
   .post(checkAuth, addMessage)
 

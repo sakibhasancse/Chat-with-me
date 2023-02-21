@@ -3,6 +3,7 @@ import { Content } from 'antd/es/layout/layout';
 import React, { useState } from 'react';
 import Chats from './Chats';
 import ChatBox from './messages';
+import './Video.css'
 
 const inbox = () => {
   const [messages, setMessages] = useState([{

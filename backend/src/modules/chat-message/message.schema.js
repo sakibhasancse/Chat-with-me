@@ -1,24 +1,27 @@
 import mongoose from 'mongoose'
+import { CreatedBySchemas, Id } from '../common/common.model.js'
 const { Schema } = mongoose
 
 const messageSchema = new Schema(
-  {
-    createdBy: {
-      type: String,
-      require: true
-    },
-    content: {
-      type: String
-    },
-    isFile: {
-      type: Boolean,
-      default: false
-    },
-    chatId: {
-      type: Schema.Types.ObjectId,
-      require: true
-    }
-  },
+  [Id,
+    CreatedBySchemas,
+    {
+      createdBy: {
+        type: String,
+        require: true
+      },
+      content: {
+        type: String
+      },
+      isFile: {
+        type: Boolean,
+        default: false
+      },
+      chatId: {
+        type: String,
+        require: true
+      }
+    }],
   {
     timestamps: true,
     versionKey: false,

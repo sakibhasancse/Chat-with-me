@@ -1,5 +1,5 @@
 import React from "react";
-const AuthContext = React.createContext(null);
+export const AuthContext = React.createContext(null);
 
 import Cookies from 'js-cookie'
 import jwtDecode from 'jwt-decode'

@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-
+import mongoose from 'mongoose'
 import { CustomError } from '../app/error.js'
 import { userHelper } from '../modules/helpers.js'
 
@@ -40,8 +40,10 @@ export const checkAuth = async (req, res, next) => {
     if (token) {
       const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
       const user = await userHelper.getAUser(decoded?.userId)
-      console.log({ token, user, decoded })
-      req.user = { userId: user._id, ...user }
+      if (!user) {
+        throw new Error('User not found')
+      }
+      req.user = { userId: user._id.toString(), ...user }
     }
     return next()
   } catch (error) {

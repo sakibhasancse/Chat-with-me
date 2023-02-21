@@ -4,7 +4,7 @@ import { createChat, GetChats } from './chat.controller.js'
 
 const router = express.Router()
 
-router.route('/chat')
+router.route('/')
   .get(checkAuth, GetChats)
   .post(checkAuth, createChat)
 

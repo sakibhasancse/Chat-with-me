@@ -11,7 +11,7 @@ export const getAUser = async (query = {}) => {
 export const validateAndPrepareRegisterData = async (body = {}) => {
   const { email, name, password, phoneNumber } = body
   const userExists = await getAUser({ email })
-
+  console.log({ email, userExists })
   if (userExists) {
     throw new CustomError(400, 'User exists with email')
   }

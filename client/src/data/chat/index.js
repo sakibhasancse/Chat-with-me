@@ -18,13 +18,12 @@ export const createChat = async (userId) => {
 }
 
 
-const getMessages = async (chatIdt) => {
-  const response = await apiRequest({ path: "/message", data: { chatId } })
-  console.log({ response })
+export const getMessages = async (chatId) => {
+  const response = await apiRequest({ path: `/message?chatId=${chatId}` })
   return response?.data || {}
 }
 
-const sendMessage = async (chatId, content) => {
+export const sendMessage = async (chatId, content) => {
   const response = await apiRequest({
     method: 'POST', path: "/message", data: {
       content,
@@ -35,7 +34,7 @@ const sendMessage = async (chatId, content) => {
   return response?.data || {}
 }
 
-const removeMessage = async (chatId, content) => {
+export const removeMessage = async (chatId, content) => {
   const response = await apiRequest({
     method: 'DELETE', path: "/message", data: {
       content,
