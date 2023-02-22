@@ -19,6 +19,9 @@ const InboxProvider = ({ children }) => {
   const [userMicStatus, setUserMicStatus] = useState();
   const [otherUsers, setOtherUsers] = useState([])
 
+
+ const [calling, setUserCalling] = useState({})
+
   const myVideo = useRef();
 
   useEffect(() => {
@@ -30,7 +33,6 @@ const InboxProvider = ({ children }) => {
     })
     socket.emit("connection", { data: user?.userId, s: 'ss' });
     socket.emit('user-join', { userId: user?.userId });
-
     socket.on("error", (id) => {
       console.log('hello', id)
     });
@@ -44,8 +46,9 @@ const InboxProvider = ({ children }) => {
     });
 
 
-    socket.on("callUser", ({ from, name: callerName, signal }) => {
-      setCall({ isReceivingCall: true, from, name: callerName, signal });
+    socket.on("callUser", ({ fromUserId, name, signal }) => {
+      console.log({ fromUserId, name: callerName, signal })
+      setUserCalling({ isReceivingCall: true, fromUserId, name, signal });
     });
 
     socket.on("updateUserMedia", ({ type, currentMediaStatus }) => {
@@ -83,21 +86,22 @@ const InboxProvider = ({ children }) => {
 
   const callUser = (currentUser = {}) => {
     const otherUser = chatList.find(chatItem => chatItem._id === currentChatId)
-    console.log({ otherUser, ss: otherUser.participantOtherUsers })
     const peer = new Peer({ initiator: true, trickle: false, stream })
     peer.on("signal", (data) => {
       console.log({
-        otherUsers,
-        userToCall: otherUser.participantOtherUsers[0]?._id,
+        toUserId: otherUser.participantOtherUsers[0]?._id,
+        chatId: currentChatId,
+        fromUserId: user.userId,
         signalData: data,
-        from: currentUser.userId,
-        name: currentUser.name,
+        name: user.name,
       })
+
       socket.emit("callUser", {
-        userToCall: otherUser?.participantOtherUsers[0]?._id,
+        toUserId: otherUser.participantOtherUsers[0]?._id,
+        chatId: currentChatId,
+        fromUserId: user.userId,
         signalData: data,
-        from: currentUser.userId,
-        name: currentUser.name,
+        name: user.name,
       });
     })
 

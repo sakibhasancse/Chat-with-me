@@ -39,7 +39,8 @@ export const checkAuth = async (req, res, next) => {
     console.log({ token })
     if (token) {
       const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
-      const user = await userHelper.getAUser(decoded?.userId)
+      console.log({ decoded })
+      const user = await userHelper.getAUser({ _id: decoded?.data?.userId })
       if (!user) {
         throw new Error('User not found')
       }
