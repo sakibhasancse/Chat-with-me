@@ -16,6 +16,7 @@ import Feed from "./views/newsFeed";
 import UserProfile from "./views/userProfile";
 import Navbar from "./components/Layout";
 import AppFooter from "./components/Layout/Footer";
+import CallTab from "./views/Inbox/CallTab";
 
 const Main = () => {
   return (
@@ -33,6 +34,7 @@ const Main = () => {
             <Route path="/feed" element={<Feed />} />
             <Route path="/inbox/*" element={<Inbox />} />
             <Route path="/user/:username" element={<UserProfile />} />
+            <Route path="/call/*" element={<CallTab />} />
             {/* Your private router */}
             <Route
               path="/dashboard"

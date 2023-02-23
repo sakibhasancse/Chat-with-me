@@ -3,6 +3,7 @@ import { Content } from 'antd/es/layout/layout';
 import React, { useState } from 'react';
 import Chats from './Chats';
 import ChatBox from './messages';
+import Options from './Options';
 import './Video.css'
 
 const inbox = () => {
@@ -21,6 +22,7 @@ const inbox = () => {
 
   return (
     <Content style={{ padding: '50px' }}>
+      <Options />
       <Row>
         <Col xs={2} sm={4} md={6} lg={8} xl={10}>
           <Chats setMessages={setMessages} />

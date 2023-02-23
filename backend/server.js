@@ -74,6 +74,11 @@ io.on('connection', (socket) => {
     io.to(data.toUserId).emit("callAccepted", data);
   });
 
+  socket.on("updateMyMedia", ({ type, currentMediaStatus }) => {
+    console.log("updateMyMedia", type);
+    socket.broadcast.emit("updateUserMedia", { type, currentMediaStatus });
+  });
+
   socket.on("endCall", ({ id }) => {
     io.to(id).emit("endCall");
   });
