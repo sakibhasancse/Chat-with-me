@@ -56,11 +56,12 @@ io.on('connection', (socket) => {
     io.to(to).emit("msgRcv", { name, msg, sender });
   })
 
-  socket.on("callUser", ({ toUserId, signalData, fromUserId, name }) => {
+  socket.on("callUser", ({ toUserId, signalData, fromUserId, name, chatId }) => {
     console.log({ toUserId, fromUserId, name })
     io.to(`userId-${toUserId}`).emit("callUser", {
-      signal: signalData,
+      signalData: signalData,
       fromUserId,
+      chatId,
       name,
     });
   });
@@ -71,7 +72,7 @@ io.on('connection', (socket) => {
       type: data.type,
       currentMediaStatus: data.myMediaStatus,
     });
-    io.to(data.toUserId).emit("callAccepted", data);
+    io.to(`userId-${data.toUserId}`).emit("callAccepted", data);
   });
 
   socket.on("updateMyMedia", ({ type, currentMediaStatus }) => {

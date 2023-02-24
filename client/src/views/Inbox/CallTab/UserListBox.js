@@ -2,24 +2,33 @@ import { UserOutlined } from "@ant-design/icons"
 import { Button, Space } from "antd"
 import Avatar from "antd/es/avatar/avatar"
 import Card from "antd/es/card/Card"
+import { size } from 'lodash'
+import InboxContext from '../../../context/Inbox/inboxContext';
+import { AuthContext } from '../../../context/AuthContext';
+import { useContext } from "react"
 
 const UserListBox = ({ userList = [], callUser, calling = false, cancelCall, isCallAcceptedTab = false }) => {
+  const { stream, call = {}, answerCall, myVdoStatus, myVideo, myMicStatus, userVideo, setMyVdoStatus, setMessages, setCurrentChatId, userVdoStatus, userMicStatus, sendNewMessage } = useContext(InboxContext);
+  console.log({ call, isCallAcceptedTab, userVideo, calling })
+  const handleFullScreen = () => {
+
+  }
   return (
     <div>
       {userList.map(user => {
         return (
           <div class="card" style={{ minHeight: 400 }}>
-            {callAccepted && !callEnded && userVideo && (
+            {call?.callAccepted && !call?.callEnded && (
               <div className="card2" style={{ textAlign: "center" }} id="video2">
                 <div style={{ height: "2rem" }}>
-                  <h3>{userVdoStatus && (call.name || userName)}</h3>
+                  <h3>{userVdoStatus && (call.name)}</h3>
                 </div>
 
                 <div className="video-avatar-container">
                   <video
                     playsInline
                     ref={userVideo}
-                    onClick={fullScreen}
+                    onClick={handleFullScreen}
                     autoPlay
                     className="video-active"
                     style={{
@@ -34,9 +43,9 @@ const UserListBox = ({ userList = [], callUser, calling = false, cancelCall, isC
                       opacity: `${userVdoStatus ? "-1" : "2"}`,
                     }}
                     size={98}
-                    icon={!(userName || call.name) && <UserOutlined />}
+                    icon={!(call.name) && <UserOutlined />}
                   >
-                    {userName || call.name}
+                    {call.name}
                   </Avatar>
                   {!userMicStatus && (
                     <i

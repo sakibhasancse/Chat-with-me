@@ -23,7 +23,7 @@ import CancelCallTab from "./CancelCallTab";
 const { Search } = Input;
 
 const CallTab = () => {
-  const { stream, call = {}, answerCall, myVdoStatus, myVideo, myMicStatus, userVideo, setMyVdoStatus, setMessages, setCurrentChatId, userVdoStatus, userMicStatus, sendNewMessage, callUser } = useContext(InboxContext);
+  const { stream, setChatList, call = {}, answerCall, myVdoStatus, myVideo, myMicStatus, userVideo, setMyVdoStatus, setMessages, setCurrentChatId, userVdoStatus, userMicStatus, sendNewMessage, callUser } = useContext(InboxContext);
   const { user } = useContext(AuthContext)
   const [message, setMessage] = useState('')
   const [isWrongUrl, setIsWrongUrl] = useState(false)
@@ -74,34 +74,35 @@ const CallTab = () => {
   let { search } = useLocation();
 
   useEffect(() => {
-    const currentPath = queryString.parse(search, { parseBooleans: true });
-
-    if (!size(currentPath) ||
-      // size(currentPath) !== 2
-      // ||
-      (currentPath && 'has_video' in currentPath === false
-        || 'ig_thread_id' in currentPath === false) ||
-      !currentPath?.ig_thread_id
-    ) {
+    try {
+      const currentPath = queryString.parse(search, { parseBooleans: true });
+      if (!size(currentPath) ||
+        // size(currentPath) !== 2
+        // ||
+        (currentPath && 'has_video' in currentPath === false
+          || 'ig_thread_id' in currentPath === false) ||
+        !currentPath?.ig_thread_id
+      ) {
+        setIsWrongUrl(true)
+      } else {
+        const { ig_thread_id, callAccepted } = currentPath
+        getChatList(`?chatId=${ig_thread_id}`)
+          .then(response => {
+            console.log({ response })
+            if (size(response)) {
+              setChat(response[0])
+              setMessages(response[0].messages)
+              setCurrentChatId(ig_thread_id)
+              setChatList(response)
+            } else setIsWrongUrl(true)
+          })
+        if (callAccepted) {
+          setCallAcceptedTab(true)
+        } else setCallAcceptedTab(false)
+      }
+    } catch (error) {
+      console.log({ error })
       setIsWrongUrl(true)
-      return false
-    }
-    if (currentPath?.ig_thread_id) {
-      const { ig_thread_id, callAccepted } = currentPath
-      getChatList(`?chatId=${ig_thread_id}`)
-        .then(response => {
-          console.log({ response })
-          if (size(response)) {
-            setChat(response[0])
-            setMessages(response[0].messages)
-            setCurrentChatId(ig_thread_id)
-          } else setIsWrongUrl(true)
-        }).catch(err => {
-          console.log({ err })
-        })
-      if (callAccepted) {
-        setCallAcceptedTab(true)
-      } else setCallAcceptedTab(false)
     }
   }, [search])
 

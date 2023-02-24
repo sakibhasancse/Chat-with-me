@@ -30,12 +30,15 @@ const InboxProvider = ({ children }) => {
   const connectionRef = useRef();
 
   useEffect(() => {
-    console.log({ user })
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((currentStream) => {
-      console.log('c', currentStream)
-      setStream(currentStream);
-      myVideo.current.srcObject = currentStream;
-    })
+    console.log('ssss', user, userVideo, myVideo)
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then((currentStream) => {
+        console.log('c', currentStream)
+        setStream(currentStream);
+        myVideo.current.srcObject = currentStream;
+        console.log('ssss', userVideo, myVideo)
+      })
+
     socket.emit("connection", { data: user?.userId, s: 'ss' });
     socket.emit('user-join', { userId: user?.userId });
     socket.on("error", (id) => {
@@ -51,9 +54,9 @@ const InboxProvider = ({ children }) => {
     });
 
 
-    socket.on("callUser", ({ fromUserId, name, signal }) => {
-      console.log({ fromUserId, name, signal })
-      setCall({ isReceivingCall: true, fromUserId, name, signal });
+    socket.on("callUser", ({ fromUserId, name, signalData, chatId }) => {
+      console.log({ fromUserId, name, signalData, chatId })
+      setCall({ isReceivingCall: true, fromUserId, name, signal: signalData, chatId });
     });
 
     socket.on("updateUserMedia", ({ type, currentMediaStatus }) => {
@@ -80,15 +83,15 @@ const InboxProvider = ({ children }) => {
     })
 
 
-    socket.on("callAccepted", ({ signal, userName }) => {
-      setCall(oldInfo => ({ ...oldInfo, callAccepted: true, userName }));
-      console.log('callAccepted')
-      peer.signal(signal);
-      socket.emit("updateMyMedia", {
-        type: "both",
-        currentMediaStatus: [myMicStatus, myVdoStatus],
-      });
-    });
+    // socket.on("callAccepted", ({ signal, userName }) => {
+    //   setCall(oldInfo => ({ ...oldInfo, callAccepted: true, userName }));
+    //   console.log('callAccepted')
+    //   peer.signal(signal);
+    //   socket.emit("updateMyMedia", {
+    //     type: "both",
+    //     currentMediaStatus: [myMicStatus, myVdoStatus],
+    //   });
+    // });
   }, [])
 
   const sendNewMessage = (value) => {
@@ -104,15 +107,11 @@ const InboxProvider = ({ children }) => {
   const callUser = (currentUser = {}) => {
     const otherUser = chatList.find(chatItem => chatItem._id === currentChatId)
     const peer = new Peer({ initiator: true, trickle: false, stream })
+    console.log('callUser', {
+      stream
+    })
     peer.on("signal", (data) => {
-      console.log({
-        toUserId: otherUser.participantOtherUsers[0]?._id,
-        chatId: currentChatId,
-        fromUserId: user.userId,
-        signalData: data,
-        name: user.name,
-      })
-
+      console.log('ans')
       socket.emit("callUser", {
         toUserId: otherUser.participantOtherUsers[0]?._id,
         chatId: currentChatId,
@@ -122,52 +121,91 @@ const InboxProvider = ({ children }) => {
       });
     })
 
-    peer.on("stream", (currentStream) => {
-      userVideo.current.srcObject = currentStream;
-    });
 
-    socket.on("callAccepted", ({ signal, userName }) => {
-      setCall(oldInfo => ({ ...oldInfo, callAccepted: true, userName }));
-      console.log({ userName })
-      peer.signal(signal);
+    socket.on("callAccepted", ({ signalData, userName, name }) => {
+      console.log('callAccepted', userName, name, signalData)
+      setCall(oldInfo => ({ ...oldInfo, callAccepted: true, name, userName }));
+      peer.signal(signalData);
+
       socket.emit("updateMyMedia", {
         type: "both",
         currentMediaStatus: [myMicStatus, myVdoStatus],
       });
     });
+    console.log('stream')
+    peer.on("stream", (currentStream) => {
+      console.log('stream, from ans call', currentStream)
+      userVideo.current.srcObject = currentStream;
+    });
+    console.log('end stream')
 
+    // peer.on('data', data => {
+    //   console.log('Received a message from the remote peer')
+    // })
+    console.log('connect')
+    peer.on('connect', data => {
+      console.log('Successfully connected to user', data)
+    })
+    console.log('track')
+    peer.on('track', (track, stream) => {
+      console.log('Successfully connected to user track')
+    })
+    console.log('error')
+    peer.on('error', (err) => {
+      console.log('Error connected to user track', err)
+    })
     connectionRef.current = peer;
     console.log(connectionRef.current);
   }
 
   const answerCall = () => {
     const peer = new Peer({ initiator: false, trickle: false, stream });
-    console.log('answerCall', {
-      myMicStatus, myVdoStatus
-    })
-    console.log({ peer })
     peer.on("signal", (data) => {
-      console.log('signal1', call.fromUserId, call.toUserId)
       socket.emit("answerCall", {
         signalData: data,
         toUserId: call.fromUserId,
         userName: user.name,
+        name: user.name,
         type: "both",
         myMediaStatus: [myMicStatus, myVdoStatus],
       });
     });
     peer.on("stream", (currentStream) => {
-      userVideo.current.srcObject = currentStream;
+      console.log('stream, from receive call', currentStream)
+      userVideo.current.srcObject = currentStream
     });
 
     peer.signal(call.signal);
-
     connectionRef.current = peer;
+
+    // peer.on('data', data => {
+    //   console.log('Received a message from the remote peer')
+    // })
+    peer.on('connect', data => {
+      console.log('Successfully connected to user')
+    })
+    peer.on('track', (track, stream) => {
+      console.log('Successfully connected to user track', track, stream)
+    })
+    peer.on('error', (err) => {
+      console.log('Error connected to user track', err)
+    })
+
     console.log(connectionRef.current);
+    console.log('userVideo', userVideo);
+    console.log('call', call.signal)
   }
 
   return (
-    <InboxContext.Provider value={{ currentChatId, setMyVdoStatus, myVdoStatus, stream, myVideo, userVideo, answerCall, call, setOtherUsers, sendNewMessage, chatList, setChatList, setMessages, messages, setCurrentChatId, callUser }}>
+    <InboxContext.Provider value={{
+      setMyMicStatus,
+      myMicStatus, userVdoStatus, userMicStatus,
+      setStream, currentChatId, setMyVdoStatus,
+      myVdoStatus, stream, myVideo, userVideo,
+      answerCall, call, setOtherUsers, sendNewMessage,
+      chatList, setChatList, setMessages, messages,
+      setCurrentChatId, callUser
+    }}>
       {children}
     </InboxContext.Provider>
   )

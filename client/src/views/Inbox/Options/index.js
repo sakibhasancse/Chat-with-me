@@ -9,14 +9,15 @@ import { PhoneOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router";
 
 const Options = () => {
-  const { call = {}, answerCall } = useContext(InboxContext);
+  const { call = {}, answerCall, currentChatId = '' } = useContext(InboxContext);
   const [showCallingModal, setShowCallingModal] = useState(false)
   const Audio = useRef();
 
   const navigator = useNavigate()
-
+  console.log({ call })
   const handleRedirectUrl = (isVideoCall = false) => {
-    const path = `/call?has_video=${isVideoCall}&ig_thread_id=${currentChatId}&callAccepted=true`
+    console.log({ currentChatId })
+    const path = `/call?has_video=${isVideoCall}&ig_thread_id=${currentChatId || call.chatId}&callAccepted=true`
     navigator(path)
   }
 

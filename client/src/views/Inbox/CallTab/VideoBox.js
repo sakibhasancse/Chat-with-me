@@ -13,17 +13,30 @@ import Msg_Illus from "../../../assets/images/msg_illus.svg";
 import BottomIcons from "./BottomIcons";
 import Avatar from "antd/es/avatar/avatar";
 
-const VideoBox = () => {
-  const { stream, call = {}, answerCall, myVdoStatus, myVideo, myMicStatus, userVideo, setMyVdoStatus, setMessages, setCurrentChatId, userVdoStatus, userMicStatus, sendNewMessage } = useContext(InboxContext);
+const VideoBox = ({ isCallAcceptedTab }) => {
+  const { stream, call = {}, answerCall, myVdoStatus, myVideo, setStream, myMicStatus, userVideo, setMyVdoStatus, setMessages, setCurrentChatId, userVdoStatus, userMicStatus, sendNewMessage } = useContext(InboxContext);
   const { user } = useContext(AuthContext)
   const handleFullScreen = () => {
 
   }
+  useEffect(() => {
+    // if (!myVideo?.current) {
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then((currentStream) => {
+        console.log('c', currentStream)
+        setStream(currentStream);
+        myVideo.current.srcObject = currentStream;
+      }).catch(err => {
+        console.log({ err })
+      })
+    // }
 
+  }, [])
+  console.log({ call, myVdoStatus, myVideo })
   return (
     <div class="card" style={{ minHeight: 400 }}>
       {
-        !stream ? (
+        stream && myVdoStatus ? (
           <div
             style={{ textAlign: "center" }}
             id={call.callAccepted && !call.callEnded ? "video1" : "video3"}
@@ -43,18 +56,6 @@ const VideoBox = () => {
                   opacity: `${myVdoStatus ? "1" : "0"}`,
                 }}
               />
-
-              <Avatar
-                style={{
-                  backgroundColor: "#116",
-                  position: "absolute",
-                  opacity: `${myVdoStatus ? "-1" : "2"}`,
-                }}
-                size={98}
-                icon={!user?.name && <UserOutlined />}
-              >
-                {user?.name}
-              </Avatar>
             </div>
           </div>
         ) : (

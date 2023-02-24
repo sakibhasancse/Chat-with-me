@@ -11,9 +11,9 @@ import ScreenShare from '../../../assets/images/share_screen.svg'
 import VideoIcon from "../../../assets/images/video.svg";
 import VideoOff from "../../../assets/images/video-off.svg";
 import Msg_Illus from "../../../assets/images/msg_illus.svg";
-
+import socket from '../../../socket'
 const BottomIcons = () => {
-  const { stream, call = {}, answerCall, myVdoStatus, myVideo, myMicStatus, userVideo, setMyVdoStatus, setMessages, setCurrentChatId, userVdoStatus, userMicStatus, sendNewMessage } = useContext(InboxContext);
+  const { stream, call = {}, answerCall, setMyMicStatus, myVdoStatus, myVideo, myMicStatus, userVideo, setMyVdoStatus, setMessages, setCurrentChatId, userVdoStatus, userMicStatus, sendNewMessage } = useContext(InboxContext);
 
   const handleVideoSharing = () => {
     setMyVdoStatus((currentStatus) => {
@@ -25,10 +25,19 @@ const BottomIcons = () => {
       return !currentStatus;
     });
   }
-  
-  const handleMic = () => {
 
-  }
+  const handleMic = () => {
+    setMyMicStatus((currentStatus) => {
+      socket.emit("updateMyMedia", {
+        type: "mic",
+        currentMediaStatus: !currentStatus,
+      });
+      stream.getAudioTracks()[0].enabled = !currentStatus;
+      return !currentStatus;
+    });
+  };
+
+
 
   const handleSound = () => {
 
