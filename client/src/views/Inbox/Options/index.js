@@ -6,15 +6,28 @@ import Phone from "../../../assets/images/phone.gif";
 import InboxContext from '../../../context/Inbox/inboxContext';
 import "./Options.module.css";
 import { PhoneOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router";
 
 const Options = () => {
   const { call = {}, answerCall } = useContext(InboxContext);
   const [showCallingModal, setShowCallingModal] = useState(false)
   const Audio = useRef();
 
+  const navigator = useNavigate()
+
+  const handleRedirectUrl = (isVideoCall = false) => {
+    const path = `/call?has_video=${isVideoCall}&ig_thread_id=${currentChatId}&callAccepted=true`
+    navigator(path)
+  }
+
   const handleCancel = () => {
     setShowCallingModal(false)
     leaveCall();
+  }
+
+  const acceptUserCall = () => {
+    answerCall();
+    handleRedirectUrl()
   }
 
   useEffect(() => {
@@ -59,7 +72,7 @@ const Options = () => {
             color="#29bb89"
             icon={<PhoneOutlined />}
             onClick={() => {
-              answerCall();
+              acceptUserCall()
               Audio.current.pause();
             }}
             tabIndex="0"

@@ -25,6 +25,7 @@ const BottomIcons = () => {
       return !currentStatus;
     });
   }
+  
   const handleMic = () => {
 
   }

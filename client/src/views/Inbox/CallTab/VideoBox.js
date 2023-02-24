@@ -16,12 +16,10 @@ import Avatar from "antd/es/avatar/avatar";
 const VideoBox = () => {
   const { stream, call = {}, answerCall, myVdoStatus, myVideo, myMicStatus, userVideo, setMyVdoStatus, setMessages, setCurrentChatId, userVdoStatus, userMicStatus, sendNewMessage } = useContext(InboxContext);
   const { user } = useContext(AuthContext)
-  const [message, setMessage] = useState('')
-
-
   const handleFullScreen = () => {
 
   }
+
   return (
     <div class="card" style={{ minHeight: 400 }}>
       {

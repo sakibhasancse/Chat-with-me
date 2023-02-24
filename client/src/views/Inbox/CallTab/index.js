@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
+
 import { Input, Button, Tooltip, Modal, message, Row, Col, } from "antd";
 import { useLocation } from 'react-router-dom'
 import queryString from 'query-string';
@@ -18,22 +19,38 @@ import socket from "../../../socket";
 import { getChatList } from "../../../data/chat";
 import UserListBox from "./UserListBox";
 import VideoBox from "./VideoBox";
+import CancelCallTab from "./CancelCallTab";
 const { Search } = Input;
 
 const CallTab = () => {
-  const { stream, call = {}, answerCall, myVdoStatus, myVideo, myMicStatus, userVideo, setMyVdoStatus, setMessages, setCurrentChatId, userVdoStatus, userMicStatus, sendNewMessage } = useContext(InboxContext);
+  const { stream, call = {}, answerCall, myVdoStatus, myVideo, myMicStatus, userVideo, setMyVdoStatus, setMessages, setCurrentChatId, userVdoStatus, userMicStatus, sendNewMessage, callUser } = useContext(InboxContext);
   const { user } = useContext(AuthContext)
   const [message, setMessage] = useState('')
   const [isWrongUrl, setIsWrongUrl] = useState(false)
   const [chat, setChat] = useState({})
+  const [calling, setCalling] = useState(false)
+  const [canceled, setCancelled] = useState(false)
+  const [callAcceptedTab, setCallAcceptedTab] = useState(false)
 
   const [isChatModalVisible, setIsChatModalVisible] = useState(false)
 
   const handleFullScreen = () => {
 
   }
+
   const handleMic = () => {
 
+  }
+
+  const handleCallUser = () => {
+    callUser()
+    setCalling(true)
+  }
+
+  const handleCancelCall = () => {
+    callUser()
+    setCalling(false)
+    setCancelled(true)
   }
 
   const handleMessage = (value) => {
@@ -53,12 +70,15 @@ const CallTab = () => {
       return !currentStatus;
     });
   }
+
   let { search } = useLocation();
 
   useEffect(() => {
     const currentPath = queryString.parse(search, { parseBooleans: true });
 
-    if (!size(currentPath) || size(currentPath) !== 2 ||
+    if (!size(currentPath) ||
+      // size(currentPath) !== 2
+      // ||
       (currentPath && 'has_video' in currentPath === false
         || 'ig_thread_id' in currentPath === false) ||
       !currentPath?.ig_thread_id
@@ -67,7 +87,7 @@ const CallTab = () => {
       return false
     }
     if (currentPath?.ig_thread_id) {
-      const { ig_thread_id } = currentPath
+      const { ig_thread_id, callAccepted } = currentPath
       getChatList(`?chatId=${ig_thread_id}`)
         .then(response => {
           console.log({ response })
@@ -79,6 +99,9 @@ const CallTab = () => {
         }).catch(err => {
           console.log({ err })
         })
+      if (callAccepted) {
+        setCallAcceptedTab(true)
+      } else setCallAcceptedTab(false)
     }
   }, [search])
 
@@ -94,14 +117,27 @@ const CallTab = () => {
   }
   return (
     <section className="container">
-      <Row justify="space-around" align="middle">
-        <Col xs={24} xl={14}>
-          <VideoBox />
-        </Col>
-        <Col xs={24} xl={10}>
-          <UserListBox userList={chat.participantOtherUsers} />
-        </Col>
-      </Row>
+      {canceled ? (
+        <CancelCallTab user={chat?.participantOtherUsers[0]} />
+      ) : (
+        <>
+          <Row justify="space-around" align="middle">
+            <Col xs={24} xl={14}>
+              <VideoBox />
+            </Col>
+            <Col xs={24} xl={10}>
+              <UserListBox
+                userList={chat.participantOtherUsers}
+                calling={calling}
+                callUser={handleCallUser}
+                cancelCall={handleCancelCall}
+                isCallAcceptedTab={callAcceptedTab}
+              />
+            </Col>
+          </Row >
+        </>
+      )}
+
 
       {/* <div className="grid">
         {stream ? (
@@ -273,7 +309,7 @@ const CallTab = () => {
           </div>
         )}
       </div> */}
-    </section>
+    </section >
   )
 }
 export default CallTab
