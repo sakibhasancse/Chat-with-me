@@ -11,6 +11,7 @@
     "antd": "^5.2.0",
     "axios": "^1.2.2",
     "craco": "^0.0.3",
+    "font-awesome": "^4.7.0",
     "js-cookie": "^3.0.1",
     "jwt-decode": "^3.1.2",
     "mobx": "^6.7.0",

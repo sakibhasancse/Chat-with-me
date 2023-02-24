@@ -1,9 +1,10 @@
 import { apiRequest } from "../../services"
 
-export const getChatList = async () => {
-  const response = await apiRequest({
-    path: "/chat"
-  })
+export const getChatList = async (queryPath = '') => {
+  let path = "/chat"
+  if (queryPath) path = path + queryPath
+  console.log({ path, queryPath })
+  const response = await apiRequest({ path })
   return response?.data || {}
 }
 

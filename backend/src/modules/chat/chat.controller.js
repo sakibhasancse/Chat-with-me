@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import bcrypt from 'bcryptjs'
-
+import mongoose from 'mongoose'
 import { CustomError } from '../../app/error.js'
 import { appHelper, userHelper } from '../helpers.js'
 import { ChatCollection } from './chat.model.js'
@@ -58,15 +58,20 @@ export const createChat = async (req, res, next) => {
 
 export const GetChats = async (req, res, next) => {
   try {
-    const { user = {} } = req
-    const chatList = await ChatCollection.aggregate([{
-      $match: {
-        participants: {
-          $elemMatch: {
-            userId: user.userId
-          }
+    const { user = {}, query = {} } = req
+    const { limit = 10, skip = 0, messageLimit = 10, sort = { createdAt: -1 } } = query
+    console.log({ query })
+    const matchQuery = {
+      participants: {
+        $elemMatch: {
+          userId: user.userId
         }
       }
+    }
+
+    if (query?.chatId) matchQuery._id = mongoose.Types.ObjectId(query.chatId)
+    const chatList = await ChatCollection.aggregate([{
+      $match: matchQuery
     },
     {
       $addFields: {
@@ -137,11 +142,10 @@ export const GetChats = async (req, res, next) => {
             }
           },
           { $sort: { createdAt: -1 } },
-          { $limit: 20 }
+          { $limit: messageLimit }
         ],
         as: "messages",
       }
-
     },
     {
       $group: {
@@ -163,7 +167,9 @@ export const GetChats = async (req, res, next) => {
         }
       }
     },
-
+    { $sort: sort },
+    { $skip: Number(skip) },
+    { $limit: Number(limit) },
     {
       $project: {
         _id: 1,
