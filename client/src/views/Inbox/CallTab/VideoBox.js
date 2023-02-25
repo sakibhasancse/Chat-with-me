@@ -36,7 +36,7 @@ const VideoBox = ({ isCallAcceptedTab }) => {
   return (
     <div class="card" style={{ minHeight: 400 }}>
       {
-        stream && myVdoStatus ? (
+        stream && (
           <div
             style={{ textAlign: "center" }}
             id={call.callAccepted && !call.callEnded ? "video1" : "video3"}
@@ -58,11 +58,12 @@ const VideoBox = ({ isCallAcceptedTab }) => {
               />
             </div>
           </div>
-        ) : (
-          <div className="bouncing-loader">
-            <img src={VideoOff} alt="video off icon" />
-          </div>
         )}
+      { !myVdoStatus && (
+        <div className="bouncing-loader">
+          <img src={VideoOff} alt="video off icon" />
+        </div>
+      )}
       <BottomIcons />
     </div>
   )

@@ -23,6 +23,7 @@ const InboxProvider = ({ children }) => {
   // my status 
   const [myMicStatus, setMyMicStatus] = useState(true);
   const [myVdoStatus, setMyVdoStatus] = useState(true);
+  const [screenShare, setScreenShare] = useState(false)
 
   const [call, setCall] = useState({})
 
@@ -82,16 +83,9 @@ const InboxProvider = ({ children }) => {
       setMessages(oldMessage => [...oldMessage, data.newMessage])
     })
 
-
-    // socket.on("callAccepted", ({ signal, userName }) => {
-    //   setCall(oldInfo => ({ ...oldInfo, callAccepted: true, userName }));
-    //   console.log('callAccepted')
-    //   peer.signal(signal);
-    //   socket.emit("updateMyMedia", {
-    //     type: "both",
-    //     currentMediaStatus: [myMicStatus, myVdoStatus],
-    //   });
-    // });
+    socket.on("endCall", () => {
+      window.location.reload();
+    });
   }, [])
 
   const sendNewMessage = (value) => {
@@ -159,6 +153,8 @@ const InboxProvider = ({ children }) => {
   }
 
   const answerCall = () => {
+    setCall(oldInfo => ({ ...oldInfo, callAccepted: true }))
+    console.log({ call })
     const peer = new Peer({ initiator: false, trickle: false, stream });
     peer.on("signal", (data) => {
       socket.emit("answerCall", {
@@ -194,6 +190,19 @@ const InboxProvider = ({ children }) => {
     console.log(connectionRef.current);
     console.log('userVideo', userVideo);
     console.log('call', call.signal)
+
+
+  }
+
+  const leaveCall = () => {
+    setCall(oldCall => ({ ...oldCall, callEnded: true }));
+    connectionRef.current.destroy();
+    socket.emit("endCall", { id: call.fromUserId });
+    window.location.reload();
+  }
+
+  const cancelCall = () => {
+    socket.emit("endCall", { id: call.fromUserId });
   }
 
   return (
@@ -204,7 +213,10 @@ const InboxProvider = ({ children }) => {
       myVdoStatus, stream, myVideo, userVideo,
       answerCall, call, setOtherUsers, sendNewMessage,
       chatList, setChatList, setMessages, messages,
-      setCurrentChatId, callUser
+      setCurrentChatId, callUser,
+      leaveCall, screenShare, setScreenShare,
+      connectionRef,
+      cancelCall
     }}>
       {children}
     </InboxContext.Provider>

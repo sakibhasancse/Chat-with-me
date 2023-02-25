@@ -80,8 +80,9 @@ io.on('connection', (socket) => {
     socket.broadcast.emit("updateUserMedia", { type, currentMediaStatus });
   });
 
-  socket.on("endCall", ({ id }) => {
-    io.to(id).emit("endCall");
+  socket.on("endCall", (data) => {
+    console.log('call end', data)
+    io.to(data.id).emit("endCall");
   });
 })
 export default app

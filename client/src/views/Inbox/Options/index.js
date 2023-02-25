@@ -9,7 +9,7 @@ import { PhoneOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router";
 
 const Options = () => {
-  const { call = {}, answerCall, currentChatId = '' } = useContext(InboxContext);
+  const { call = {}, answerCall, currentChatId = '', cancelCall } = useContext(InboxContext);
   const [showCallingModal, setShowCallingModal] = useState(false)
   const Audio = useRef();
 
@@ -23,7 +23,7 @@ const Options = () => {
 
   const handleCancel = () => {
     setShowCallingModal(false)
-    leaveCall();
+    cancelCall();
   }
 
   const acceptUserCall = () => {

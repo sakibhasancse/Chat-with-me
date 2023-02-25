@@ -13,9 +13,27 @@ import VideoOff from "../../../assets/images/video-off.svg";
 import Msg_Illus from "../../../assets/images/msg_illus.svg";
 import socket from '../../../socket'
 const BottomIcons = () => {
-  const { stream, call = {}, answerCall, setMyMicStatus, myVdoStatus, myVideo, myMicStatus, userVideo, setMyVdoStatus, setMessages, setCurrentChatId, userVdoStatus, userMicStatus, sendNewMessage } = useContext(InboxContext);
+  const { stream, call = {},
+    setMyMicStatus, myVdoStatus, myVideo,
+    myMicStatus, setMyVdoStatus,
+    screenShare, setScreenShare, setStream, connectionRef } = useContext(InboxContext);
 
   const handleVideoSharing = () => {
+
+    if (!stream) {
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then((currentStream) => {
+          console.log('c', currentStream)
+          setStream(currentStream);
+          myVideo.current.srcObject = currentStream;
+          console.log('ssss', userVideo, myVideo)
+        }).catch((error) => {
+          console.log({ error })
+          message.error("Please toured on your camera from browser", 2);
+        })
+      return false
+    }
+
     setMyVdoStatus((currentStatus) => {
       socket.emit("updateMyMedia", {
         type: "video",
@@ -38,11 +56,58 @@ const BottomIcons = () => {
   };
 
 
+  const handleScreenSharing = () => {
+
+    if (!myVdoStatus) {
+      message.error("Turn on your video to share the content", 2);
+      return;
+    }
+
+    if (!screenShare) {
+      navigator.mediaDevices
+        .getDisplayMedia({ cursor: true })
+        .then((currentStream) => {
+          const screenTrack = currentStream.getTracks()[0];
+
+          // replaceTrack (oldTrack, newTrack, oldStream);
+          connectionRef.current.replaceTrack(
+            connectionRef.current.streams[0]
+              .getTracks()
+              .find((track) => track.kind === 'video'),
+            screenTrack,
+            stream
+          );
+
+          // Listen click end
+          screenTrack.onended = () => {
+            connectionRef.current.replaceTrack(
+              screenTrack,
+              connectionRef.current.streams[0]
+                .getTracks()
+                .find((track) => track.kind === 'video'),
+              stream
+            );
+
+            myVideo.current.srcObject = stream;
+            setScreenShare(false);
+          };
+
+          myVideo.current.srcObject = currentStream;
+          screenTrackRef.current = screenTrack;
+          setScreenShare(true);
+        }).catch((error) => {
+          console.log("No stream for sharing")
+        });
+    } else {
+      screenTrackRef.current.onended();
+    }
+  };
 
   const handleSound = () => {
 
   }
 
+  console.log('from button', call)
   return (
     <div className="iconsDiv">
       <div className="icons" onClick={() => handleVideoSharing()} tabIndex="0">
@@ -64,7 +129,7 @@ const BottomIcons = () => {
           aria-hidden="true"
         ></i>
       </div>
-      {call.callAccepted && !call.callEnded && (
+      {call.callAccepted && (
         <div
           className="icons"
           onClick={() => {
@@ -75,7 +140,7 @@ const BottomIcons = () => {
           <img src={Msg} alt="chat icon" />
         </div>
       )}
-      {call.callAccepted && !call.callEnded && (
+      {call.callAccepted ? (
         <div
           className="icons"
           onClick={() => handleScreenSharing()}
@@ -83,7 +148,7 @@ const BottomIcons = () => {
         >
           <img src={ScreenShare} alt="share screen" />
         </div>
-      )}
+      ) : null}
 
       <div
         className="icons"

@@ -23,7 +23,7 @@ import CancelCallTab from "./CancelCallTab";
 const { Search } = Input;
 
 const CallTab = () => {
-  const { stream, setChatList, call = {}, answerCall, myVdoStatus, myVideo, myMicStatus, userVideo, setMyVdoStatus, setMessages, setCurrentChatId, userVdoStatus, userMicStatus, sendNewMessage, callUser } = useContext(InboxContext);
+  const { stream, setChatList, call = {}, answerCall, leaveCall, myVdoStatus, myVideo, myMicStatus, userVideo, setMyVdoStatus, setMessages, setCurrentChatId, userVdoStatus, userMicStatus, sendNewMessage, callUser } = useContext(InboxContext);
   const { user } = useContext(AuthContext)
   const [message, setMessage] = useState('')
   const [isWrongUrl, setIsWrongUrl] = useState(false)
@@ -48,7 +48,7 @@ const CallTab = () => {
   }
 
   const handleCancelCall = () => {
-    callUser()
+    leaveCall()
     setCalling(false)
     setCancelled(true)
   }
