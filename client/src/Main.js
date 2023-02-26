@@ -16,7 +16,8 @@ import Feed from "./views/newsFeed";
 import UserProfile from "./views/userProfile";
 import Navbar from "./components/Layout";
 import AppFooter from "./components/Layout/Footer";
-import CallTab from "./views/Inbox/CallTab";
+import CallTab from "./views/CallTab";
+import MyProfile from "./views/myProfile";
 
 const Main = () => {
   return (
@@ -25,28 +26,33 @@ const Main = () => {
         <InboxProvider>
           <Navbar />
           <Routes>
-
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Service />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/feed" element={<Feed />} />
-            <Route path="/inbox/*" element={<Inbox />} />
             <Route path="/user/:username" element={<UserProfile />} />
-            <Route path="/call/*" element={<CallTab />} />
+            <Route path="/profile" element={<MyProfile />} />
             {/* Your private router */}
             <Route
-              path="/dashboard"
+              path="/inbox/*"
               element={
                 <PrivateRoute>
-                  <Dashboard />
+                  <Inbox />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/call/*"
+              element={
+                <PrivateRoute>
+                  <CallTab />
                 </PrivateRoute>
               }
             />
             {/* 404/notfound page */}
             <Route path="*" element={<NotFound />} />
-
           </Routes>
           <AppFooter />
         </InboxProvider>

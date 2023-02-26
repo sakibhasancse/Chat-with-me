@@ -4,19 +4,19 @@ import { Input, Button, Tooltip, Modal, message, Row, Col, } from "antd";
 import { useLocation } from 'react-router-dom'
 import queryString from 'query-string';
 import { size } from 'lodash'
-import InboxContext from '../../../context/Inbox/inboxContext';
-import { AuthContext } from '../../../context/AuthContext';
-import Msg from "../../../assets/images/msg.svg";
-import ScreenShare from '../../../assets/images/share_screen.svg'
-import VideoIcon from "../../../assets/images/video.svg";
-import VideoOff from "../../../assets/images/video-off.svg";
-import Msg_Illus from "../../../assets/images/msg_illus.svg";
+import InboxContext from '../../context/Inbox/inboxContext';
+import { AuthContext } from '../../context/AuthContext';
+import Msg from "../../assets/images/msg.svg";
+import ScreenShare from '../../assets/images/share_screen.svg'
+import VideoIcon from "../../assets/images/video.svg";
+import VideoOff from "../../assets/images/video-off.svg";
+import Msg_Illus from "../../assets/images/msg_illus.svg";
 
 import './call.css'
 import { UserOutlined } from "@ant-design/icons";
 import Avatar from "antd/es/avatar/avatar";
-import socket from "../../../socket";
-import { getChatList } from "../../../data/chat";
+import socket from "../../socket";
+import { getChatList } from "../../data/chat";
 import UserListBox from "./UserListBox";
 import VideoBox from "./VideoBox";
 import CancelCallTab from "./CancelCallTab";

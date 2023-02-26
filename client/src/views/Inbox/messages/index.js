@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react"
-import { Card, Modal, Button, Input, notification, Avatar } from "antd";
+import { Card, Modal, Button, Input, notification, Avatar, Empty } from "antd";
 import moment from 'moment'
 import { size } from 'lodash'
 const { Search } = Input;
@@ -46,43 +46,59 @@ const ChatBox = () => {
   }, [messages]);
 
   return (
-
-    <div style={{ padding: "20px" }}>
-      <ChatTopBar />
+    <>
       {
-        messages.length ? (
-          <div className="msg_flex">
-            {messages.map((msg) => (
-              <div
-                className={msg.createdBy === user.userId ? "msg_sent" : "msg_rcv"}
-              >
-                {msg.content}
-                <br />
-                <span style={{
-                  color: "rgb(136 121 121)",
-                  fontSize: "smaller"
-                }}>{moment(msg.createdAt).fromNow()}</span>
+        chatId ? (
+          <>
+            <ChatTopBar />
+            <div style={{ padding: "20px", height: '90%' }}>
+              {
+                messages.length ? (
+                  <div className="msg_flex">
+                    {messages.map((msg) => (
+                      <div
+                        className={msg.createdBy === user.userId ? "msg_sent" : "msg_rcv"}
+                      >
+                        {msg.content}
+                        <br />
+                        <span style={{
+                          color: "rgb(136 121 121)",
+                          fontSize: "smaller"
+                        }}>{moment(msg.createdAt).fromNow()}</span>
+                      </div>
+                    ))}
+                    <div ref={dummy} id="no_border"></div>
+                  </div>
+                ) : (
+                  <div className="chat_img_div">
+                    <img src={Msg_Illus} alt="msg_illus" className="img_illus" />
+                  </div>
+                )
+              }
+              <div style={{ position: "sticky", bottom: "0" }}>
+                <Search
+
+                  placeholder="your message"
+                  allowClear
+                  className="input_msg"
+                  enterButton="Send 🚀"
+                  onChange={(e) => setMessage(e.target.value)}
+                  value={message}
+                  size="large"
+                  onSearch={handleMessage}
+                />
+
               </div>
-            ))}
-            <div ref={dummy} id="no_border"></div>
-          </div>
+            </div>
+          </>
         ) : (
-          <div className="chat_img_div">
-            <img src={Msg_Illus} alt="msg_illus" className="img_illus" />
+          <div>
+            <Empty description="Select a chat or start a new conversation" />
           </div>
+
         )
       }
-      <Search
-        placeholder="your message"
-        allowClear
-        className="input_msg"
-        enterButton="Send 🚀"
-        onChange={(e) => setMessage(e.target.value)}
-        value={message}
-        size="large"
-        onSearch={handleMessage}
-      />
-    </div>
+    </>
   )
 }
 

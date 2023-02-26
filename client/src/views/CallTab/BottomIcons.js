@@ -5,13 +5,13 @@ import { AudioMutedOutlined, CheckOutlined, DownOutlined, SettingOutlined, Smile
 
 import queryString from 'query-string';
 import { size } from 'lodash'
-import InboxContext from '../../../context/Inbox/inboxContext';
-import Msg from "../../../assets/images/msg.svg";
-import ScreenShare from '../../../assets/images/share_screen.svg'
-import VideoIcon from "../../../assets/images/video.svg";
-import VideoOff from "../../../assets/images/video-off.svg";
-import Msg_Illus from "../../../assets/images/msg_illus.svg";
-import socket from '../../../socket'
+import InboxContext from '../../context/Inbox/inboxContext';
+import Msg from "../../assets/images/msg.svg";
+import ScreenShare from '../../assets/images/share_screen.svg'
+import VideoIcon from "../../assets/images/video.svg";
+import VideoOff from "../../assets/images/video-off.svg";
+import Msg_Illus from "../../assets/images/msg_illus.svg";
+import socket from '../../socket'
 const BottomIcons = () => {
   const { stream, call = {},
     setMyMicStatus, myVdoStatus, myVideo,

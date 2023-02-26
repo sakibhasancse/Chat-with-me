@@ -1,22 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { Layout, Button, Drawer } from "antd";
-import LeftMenu from "./LeftMenu.js";
-import RightMenu from "./RightMenu.js";
-import { MenuOutlined } from "@ant-design/icons";
-import { useLocation, Link } from "react-router-dom";
+import { MenuOutlined, MessageOutlined } from "@ant-design/icons";
+import { useLocation } from "react-router-dom";
 
-import './style.css'
 import myLogo from '../../assets/images/mylogo.png'
-import SessionStore from '../../store/SessionStore';
-
-import {
-  useWindowSize,
-  useWindowWidth,
-  useWindowHeight,
-} from '@react-hook/window-size'
+import Options from '../../views/CallTab/Modals/IncomingCall.js';
+import LeftMenu from "./LeftMenu.js";
+import RightMenu from "./RightMenu.js"
+import './style.css'
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
+
   const showDrawer = () => {
     setVisible(!visible);
   };
@@ -30,22 +25,26 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
+      <Options />
       <Layout>
         <Layout.Header className="nav-header">
           <div className="logo">
             <img className="header-logo" src={myLogo} />
           </div>
           <div className="navbar-menu">
+            <Button type="text" onClick={showDrawer}>
+              <MessageOutlined />
+            </Button>
             <div className="leftMenu">
               <LeftMenu mode={"horizontal"} />
             </div>
+
             <Button className="menuButton" type="text" onClick={showDrawer}>
               <MenuOutlined />
             </Button>
             <div className="rightMenu">
               <RightMenu mode={"horizontal"} />
             </div>
-
             <Drawer
               title={"Brand Here"}
               placement="right"

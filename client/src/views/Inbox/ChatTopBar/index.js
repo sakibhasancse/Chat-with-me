@@ -17,7 +17,7 @@ const ChatTopBar = ({ otherUser = {} }) => {
   }
 
   return (
-    <div style={{ float: "right" }}>
+    <div style={{ float: "right", position: "sticky", top: "0" }}>
       <Button
         type="primary"
         icon={<PhoneOutlined />}

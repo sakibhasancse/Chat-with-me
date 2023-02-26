@@ -32,13 +32,20 @@ const InboxProvider = ({ children }) => {
 
   useEffect(() => {
     console.log('ssss', user, userVideo, myVideo)
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-      .then((currentStream) => {
-        console.log('c', currentStream)
-        setStream(currentStream);
-        myVideo.current.srcObject = currentStream;
-        console.log('ssss', userVideo, myVideo)
-      })
+    try {
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then((currentStream) => {
+          console.log('c', currentStream)
+          setStream(currentStream);
+          myVideo.current.srcObject = currentStream;
+          console.log('ssss', userVideo, myVideo)
+        }).catch(err => {
+          console.log({ err })
+        })
+    } catch (error) {
+      console.log('ss', { error })
+    }
+
 
     socket.emit("connection", { data: user?.userId, s: 'ss' });
     socket.emit('user-join', { userId: user?.userId });

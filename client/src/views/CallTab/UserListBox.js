@@ -1,12 +1,8 @@
 import { UserOutlined } from "@ant-design/icons"
-import { Button, Space } from "antd"
+import { Button } from "antd"
 import Avatar from "antd/es/avatar/avatar"
-import Card from "antd/es/card/Card"
-import { size } from 'lodash'
-import InboxContext from '../../../context/Inbox/inboxContext';
-import { AuthContext } from '../../../context/AuthContext';
-import VideoIcon from "../../../assets/images/video.svg";
-import VideoOff from "../../../assets/images/video-off.svg";
+import InboxContext from '../../context/Inbox/inboxContext';
+import VideoOff from "../../assets/images/video-off.svg";
 import { useContext } from "react"
 
 const UserListBox = ({ userList = [], callUser, calling = false, cancelCall, isCallAcceptedTab = false }) => {
@@ -15,7 +11,6 @@ const UserListBox = ({ userList = [], callUser, calling = false, cancelCall, isC
 
   const handleFullScreen = (event) => {
     const elem = event.target;
-    console.log({ elem })
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
     } else if (elem.mozRequestFullScreen) {

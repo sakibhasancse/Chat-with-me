@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
-import { Input, Button, Tooltip, Modal, message } from "antd";
+import { Button, Modal } from "antd";
 
 import Teams from '../../../assets/audio/teams.mp3'
 import Phone from "../../../assets/images/phone.gif";
@@ -8,15 +8,13 @@ import "./Options.module.css";
 import { PhoneOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router";
 
-const Options = () => {
+const IncomingCall = () => {
   const { call = {}, answerCall, currentChatId = '', cancelCall } = useContext(InboxContext);
   const [showCallingModal, setShowCallingModal] = useState(false)
   const Audio = useRef();
 
   const navigator = useNavigate()
-  console.log({ call })
   const handleRedirectUrl = (isVideoCall = false) => {
-    console.log({ currentChatId })
     const path = `/call?has_video=${isVideoCall}&ig_thread_id=${currentChatId || call.chatId}&callAccepted=true`
     navigator(path)
   }
@@ -36,7 +34,6 @@ const Options = () => {
       setShowCallingModal(true);
       // setOtherUser(call.from);
     } else setShowCallingModal(false);
-    console.log('calling', call)
   }, [call.isReceivingCall])
 
   useEffect(() => {
@@ -98,4 +95,4 @@ const Options = () => {
   )
 }
 
-export default Options
+export default IncomingCall

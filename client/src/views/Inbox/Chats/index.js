@@ -40,9 +40,9 @@ const Chats = () => {
     <div
       id="scrollableDiv"
       style={{
-        height: 400,
+        height: '800px',
         overflow: 'auto',
-        padding: '0 16px',
+        // padding: '0 16px',
         border: '1px solid rgba(140, 140, 140, 0.35)',
       }}
     >
@@ -53,9 +53,7 @@ const Chats = () => {
         loader={
           <Skeleton
             avatar
-            paragraph={{
-              rows: 1,
-            }}
+            paragraph={{ rows: 1 }}
             active
           />
         }
