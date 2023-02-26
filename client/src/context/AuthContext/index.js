@@ -17,7 +17,7 @@ const getUser = (token) => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = React.useState(getUser());
 
-  const signIn = (tokens, callback) => {
+  const signIn = (tokens = {}, callback) => {
     console.log({ tokens })
     const { accessToken, refreshToken } = tokens
     Cookies.set('accessToken', accessToken, '30d')

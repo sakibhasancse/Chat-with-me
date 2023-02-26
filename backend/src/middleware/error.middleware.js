@@ -1,6 +1,7 @@
 import { CustomError } from '../app/error.js'
 
 export const handleError = async (err, req, res, next) => {
+  console.log({ err })
   if (res && res.headersSent) {
     return next(err)
   }

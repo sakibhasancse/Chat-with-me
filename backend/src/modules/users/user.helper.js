@@ -24,7 +24,7 @@ export const validateAndPrepareRegisterData = async (body = {}) => {
   return userData
 }
 
-export const getAuthTokens = async (user) => {
+export const getAuthTokens = async (user = {}) => {
   const { email, name, _id } = user
   const data = {
     userId: _id,

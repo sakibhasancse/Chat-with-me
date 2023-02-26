@@ -19,11 +19,7 @@ const Register = () => {
     console.log({ values })
     if (errors.length) setErrors(errors);
     else {
-      const response = await apiRequest({
-        method: "POST",
-        path: "/auth/register",
-        data: values,
-      });
+      const response = await apiRequest.post("/auth/register", values);
       if (response.error) {
         setErrors({ error: response.error });
       } else navigate("/login");

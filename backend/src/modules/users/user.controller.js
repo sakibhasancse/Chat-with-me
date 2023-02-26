@@ -53,10 +53,12 @@ export const loginUser = async (req, res, next) => {
 
 export const getRefreshToken = async (req, res, next) => {
   try {
-    const { body = { refreshToken } } = req
+    const { body = {} } = req
+    const { refreshToken } = body
     if (refreshToken) {
-      const user = appHelper.verifyJwtToken(refreshToken, process.env.REFRESH_TOKEN_SECRET)
-      if (!user || user?.userId !== body?.user?.userId) throw new CustomError(400, 'User not found')
+      const user = await appHelper.verifyJwtToken(refreshToken, process.env.REFRESH_TOKEN_SECRET)
+      console.log({ user })
+      if (!user || !user?.userId) throw new CustomError(400, 'User not found')
     } else throw new CustomError(400, 'Unauthenticated request')
 
     const tokens = await userHelper.getAuthTokens(body?.user)

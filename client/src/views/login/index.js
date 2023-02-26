@@ -24,18 +24,14 @@ const Login = () => {
     if (errors.length) setErrors(errors);
     else {
       setErrors({});
-      const response = await apiRequest({
-        method: "POST",
-        path: "/auth/login",
-        data: values,
-      });
+      const response = await apiRequest.post("/auth/login", values);
       console.log({ response })
       if (response.error) {
         setErrors({ error: response.error });
       } else {
         const from = location.state?.from?.pathname || "/";
         console.log('s', auth)
-        auth.signIn(response.data.tokens || "token", () => {
+        auth.signIn(response?.tokens || "token", () => {
           navigate(from, { replace: true });
         });
       }
