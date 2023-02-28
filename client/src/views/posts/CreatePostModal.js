@@ -1,18 +1,42 @@
 import { Button, Modal } from 'antd';
-import { useState } from 'react';
+import Input from 'antd/es/input/Input';
+import TextArea from 'antd/es/input/TextArea';
+import { useRef, useState } from 'react';
+import { createPosts } from '../../data/posts';
+import TagsInputBox from './TagsInput';
 
-const CreatePostModal = () => {
+const CreatePostModal = ({ open, setOpen, setPosts }) => {
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
-  const showModal = () => {
-    setOpen(true);
-  };
-  const handleOk = () => {
+
+  const [values, setValues] = useState({
+    title: 'test post',
+    description: 'description',
+    tags: ['software', 'programming', 'web development', 'language', 'javascript'],
+  })
+
+  console.log({ values })
+  const handleChange = (value) => {
+    setValues(oldValues => ({ ...oldValues, [value.target.name]: value.target.value }))
+  }
+
+  const handleTags = (value) => {
+    console.log({ value })
+    setValues(oldValues => ({ ...oldValues, tags: value }))
+  }
+  const handleClear = () => {
+    setValues(oldValues => ({ ...oldValues, tags: [] }))
+  }
+  const inputRef = useRef(null);
+
+  const handleOk = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setOpen(false);
-    }, 3000);
+    const response = await createPosts(values)
+    if (response) {
+      console.log({ response })
+      setPosts(oldPosts => [response, ...oldPosts])
+    }
+    setLoading(false);
+    setOpen(false);
   };
 
   const handleCancel = () => {
@@ -21,37 +45,27 @@ const CreatePostModal = () => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        Open Modal with customized footer
-      </Button>
       <Modal
         open={open}
-        title="Title"
+        title="Write contents..."
         onOk={handleOk}
         onCancel={handleCancel}
         footer={[
           <Button key="back" onClick={handleCancel}>
-            Return
+            cancel
           </Button>,
           <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
-            Submit
-          </Button>,
-          <Button
-            key="link"
-            href="https://google.com"
-            type="primary"
-            loading={loading}
-            onClick={handleOk}
-          >
-            Search on Google
-          </Button>,
+            Add Post
+          </Button>
         ]}
       >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+        <TagsInputBox tags={values.tags} setTags={handleTags} handleClear={handleClear} inputRef={inputRef} />
+        <br />
+        <br />
+        <Input placeholder="Post title" name="title" onChange={handleChange} />
+        <br />
+        <br />
+        <TextArea rows={4} placeholder="Please write your post" name="description" maxLength={600} onChange={handleChange} />
       </Modal>
     </>
   )

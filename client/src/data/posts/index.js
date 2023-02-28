@@ -1,30 +1,25 @@
 import { apiRequest } from "../../services"
 
-export const getUserPosts = async (userName) => {
-  const response = await apiRequest({
-    path="/posts", data={
-      userName
-    }
-  })
-  console.log({ response })
-  return response?.data || {}
+export const getUserPosts = async () => {
+  const response = await apiRequest.get("/posts")
+  return response?.data || []
+}
+
+export const getAllPosts = async (queryPath) => {
+  let path = "/posts"
+  if (queryPath) path = path + queryPath
+  const response = await apiRequest.get("/posts")
+  return response?.data || []
 }
 
 export const createPosts = async (content) => {
-  const response = await apiRequest({
-    method="POST", path="/posts", data={
-      content
-    }
-  })
-  console.log({ response })
-  return response?.data || {}
+  const response = await apiRequest.post('/posts', content)
+  return response || {}
 }
 
 export const removePosts = async (postId) => {
-  const response = await apiRequest({
-    method="DELETE", path="/posts", data={
-      postId
-    }
+  const response = await apiRequest.delete("/posts", {
+    postId
   })
   console.log({ response })
   return response?.data || {}

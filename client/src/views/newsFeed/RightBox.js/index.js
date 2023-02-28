@@ -9,10 +9,11 @@ import {
 } from '@ant-design/icons';
 import { Button, Divider, Space, Tag } from 'antd';
 
-const RightBox = () => {
+const RightBox = ({ open, setOpen }) => {
   const handleWriteButton = () => {
-
+    setOpen(true)
   }
+
   return (
     <>
       <Button type="dashed" onClick={() => handleWriteButton()} block icon={<PlusOutlined />}>
