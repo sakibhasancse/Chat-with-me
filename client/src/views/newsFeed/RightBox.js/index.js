@@ -1,17 +1,18 @@
 import {
-  CheckCircleOutlined,
-  ClockCircleOutlined,
-  CloseCircleOutlined,
-  ExclamationCircleOutlined,
-  MinusCircleOutlined,
   PlusOutlined,
-  SyncOutlined,
 } from '@ant-design/icons';
-import { Button, Divider, Space, Tag } from 'antd';
+
+import { Button } from 'antd';
+import { useNavigate } from 'react-router';
+import { getUser } from '../../../context/AuthContext'
 
 const RightBox = ({ open, setOpen }) => {
+  const navigator = useNavigate()
+
   const handleWriteButton = () => {
-    setOpen(true)
+    const isAuthenticatedUser = getUser()
+    if (isAuthenticatedUser) setOpen(true)
+    else navigator('/login')
   }
 
   return (

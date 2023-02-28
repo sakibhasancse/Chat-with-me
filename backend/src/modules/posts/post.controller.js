@@ -22,11 +22,12 @@ export const getPosts = async (req, res, next) => {
     const searchQuery = postHelper.postsSearchQuery({ keyword, category: categoryInfo?._id })
     const options = { limit, skip, sort }
     if (userId) {
-      posts = await postHelper.getPostsWithWishList({
+      posts = await postHelper.getPostsWithOtherInfo({
         query: searchQuery,
         userId,
         options
       })
+      console.log({ posts })
     } else {
       posts = await postHelper.getPosts(searchQuery, options)
     }
@@ -55,7 +56,7 @@ export const getPost = async (req, res, next) => {
     const { slug } = params
     let post = {}
     if (userId) {
-      post = await postHelper.getPostsWithWishList({
+      post = await postHelper.getPostsWithOtherInfo({
         query: {
           slug
         },
@@ -126,7 +127,7 @@ export const getPostsByCategory = async () => {
 
     let posts = []
     if (userId) {
-      posts = await postHelper.getPostsWithWishList({
+      posts = await postHelper.getPostsWithOtherInfo({
         query: {
           category: categoryInfo._id
         },

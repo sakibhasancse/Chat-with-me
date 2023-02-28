@@ -19,19 +19,25 @@ const Register = () => {
     console.log({ values })
     if (errors.length) setErrors(errors);
     else {
-      const response = await apiRequest.post("/auth/register", values);
-      if (response.error) {
-        setErrors({ error: response.error });
-      } else navigate("/login");
+      try {
+        const response = await apiRequest.post("/auth/register", values);
+        if (response) navigate("/login");
+      } catch (error) {
+        console.log({ error })
+        setErrors(error?.response?.data || { message: error.message });
+        // message.error(error?.response?.data?.message, 6);
+      }
+      setLoading(false);
     }
-    setLoading(false);
   };
 
-  const handleChange = (event) => {
-    setValues((oldValue) => ({
-      ...oldValue,
-      [event.target.name]: event.target.value,
-    }));
+
+  const handleChange = (value) => {
+    // setValues((oldValue) => ({
+    //   ...oldValue,
+    //   value,
+    // }));
+    setErrors({});
   };
 
   console.log({ errors, loading });
@@ -39,6 +45,7 @@ const Register = () => {
   return (
     <Row type="flex" justify="center" align="middle" style={{ minHeight: '100vh' }}>
       <div className="align">
+        <span style={{ color: "red" }}>{errors.message}</span>
         <Form
           title="Login from"
           name="normal_login"
@@ -47,6 +54,7 @@ const Register = () => {
             remember: true,
           }}
           onFinish={handleSubmit}
+          onValuesChange={handleChange}
         >
           <Col><p>Register Account</p></Col>
           <Form.Item

@@ -2,17 +2,16 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { toast } from "react-toastify";
 import { getAuthToken, getBaseUrl } from "../../utils";
-
+const token = getAuthToken();
+console.log({ token })
 const instance = axios.create({
   baseURL: getBaseUrl(),
   headers: {
     "Content-Type": "application/json",
   }
 });
-
 instance.interceptors.request.use(
   (config) => {
-    const token = getAuthToken();
     config.headers.Authorization = token ? `Bearer ${token}` : ''
     return config;
   },
@@ -34,12 +33,12 @@ instance.interceptors.response.use(
 
     if (err?.response) {
       // Access Token was expired
-      if ((err.response.status === 401 || err.response.status === 500) && !originalConfig._retry) {
+      if ((err.response.status === 401) && !originalConfig._retry) {
         originalConfig._retry = true;
-
+        console.log('ssssss', err.response.status)
         try {
           const response = await fetchRefreshToken();
-          console.log({ response }) 
+          console.log({ response })
           const { accessToken, refreshToken } = response?.tokens || {};
           Cookies.set('accessToken', accessToken, '30d')
           Cookies.set('refreshToken', refreshToken, '30d')

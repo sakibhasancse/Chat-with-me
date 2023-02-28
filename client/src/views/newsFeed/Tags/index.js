@@ -10,7 +10,7 @@ import { Divider, Space, Tag } from 'antd';
 
 const Tags = () => (
   <>
-    <Divider orientation="left">Without icon</Divider>
+    <Divider orientation="left">Tags</Divider>
     <Space size={[0, 8]} wrap>
       <Tag color="success">success</Tag>
       <Tag color="processing">processing</Tag>
@@ -18,7 +18,7 @@ const Tags = () => (
       <Tag color="warning">warning</Tag>
       <Tag color="default">default</Tag>
     </Space>
-    <Divider orientation="left">With icon</Divider>
+    <Divider orientation="left">Tags</Divider>
     <Space size={[0, 8]} wrap>
       <Tag icon={<CheckCircleOutlined />} color="success">
         success

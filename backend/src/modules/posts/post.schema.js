@@ -1,8 +1,12 @@
 import mongoose from 'mongoose'
+import Nid from 'nid'
 const { Schema } = mongoose
 
 const postSchema = new Schema(
   {
+    _id: {
+      type: String
+    },
     title: {
       type: String,
       required: true
@@ -36,4 +40,8 @@ const postSchema = new Schema(
   }
 )
 
+postSchema.pre('save', function (next) {
+  this._id = Nid(17)
+  next()
+})
 export default postSchema

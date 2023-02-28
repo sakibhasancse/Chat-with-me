@@ -49,7 +49,6 @@ const ArticleCard = ({ posts, loading }) => {
     dataSource={posts}
     footer={
       <div>
-        <b>ant design</b> footer part
       </div>
     }
     renderItem={(item) => (

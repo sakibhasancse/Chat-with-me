@@ -14,7 +14,7 @@ export const getPost = async (query) => {
 
 export const postsSearchQuery = ({ keyword, category }) => {
   const query = {
-    name: {
+    title: {
       $regex: keyword,
       $options: 'i'
     }
@@ -68,14 +68,41 @@ export const postsWishListPipeline = (userId) => {
   return wishListPipeline
 }
 
-export const getPostsWithWishList = async (params) => {
+export const userInfoPipeline = {
+  $lookup: {
+    // localField: 'createdBy',
+    // foreignField: '_id',
+    let: { createdBy: '$createdBy' },
+    from: 'users',
+    as: 'creator',
+    pipeline: [
+      {
+        $match: {
+          $and: [{ $expr: { $eq: ['$$createdBy', '$_id'] } }]
+        }
+      },
+      { $limit: 1 },
+      {
+        $project: {
+          'name': 1,
+          userId: '$_id',
+          username: 1
+        }
+      }
+    ]
+  }
+}
+
+export const getPostsWithOtherInfo = async (params) => {
+
   const { userId = '', query = {}, options = {} } = params
   const { sort = { createdAt: -1 }, skip = 0, limit = 50 } = options
   const posts = await PostCollection.aggregate([
     {
       $match: query
     },
-    ...postsWishListPipeline(userId),
+    // ...postsWishListPipeline(userId),
+    userInfoPipeline,
     {
       $sort: sort
     },

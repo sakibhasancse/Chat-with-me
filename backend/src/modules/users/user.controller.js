@@ -55,15 +55,22 @@ export const getRefreshToken = async (req, res, next) => {
   try {
     const { body = {} } = req
     const { refreshToken } = body
-    if (refreshToken) {
-      const user = await appHelper.verifyJwtToken(refreshToken, process.env.REFRESH_TOKEN_SECRET)
-      console.log({ user })
-      if (!user || !user?.userId) throw new CustomError(400, 'User not found')
-    } else throw new CustomError(400, 'Unauthenticated request')
-
-    const tokens = await userHelper.getAuthTokens(body?.user)
+    console.log({ refreshToken })
+    if (!refreshToken) {
+      throw new CustomError(400, 'Unauthenticated request')
+    }
+    const decoded = await appHelper.verifyJwtToken(refreshToken, process.env.REFRESH_TOKEN_SECRET)
+    console.log({ user })
+    if (!decoded || !decoded?.userId) {
+      throw new CustomError(400, 'Unauthenticated request')
+    }
+    const user = await userHelper.getAUser({ _id: decoded.userId })
+    if (user) {
+      throw new CustomError(400, 'User not found')
+    }
+    const tokens = await userHelper.getAuthTokens(user)
     if (!tokens) throw new CustomError(500, 'Internal server error')
-
+    console.log({ tokens })
     res.status(200).json({
       tokens,
       status: 'success'
