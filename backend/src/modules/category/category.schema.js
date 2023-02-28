@@ -1,6 +1,10 @@
 import mongoose from 'mongoose'
+import Nid from 'nid';
 
 const CategorySchema = new mongoose.Schema({
+  _id: {
+    type: String
+  },
   name: {
     type: String,
     required: true,
@@ -24,5 +28,10 @@ const CategorySchema = new mongoose.Schema({
     public_id: String
   },
 });
+
+CategorySchema.pre('save', function (next) {
+  this._id = Nid(17)
+  next()
+})
 
 export default CategorySchema

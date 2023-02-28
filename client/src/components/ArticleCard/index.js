@@ -33,9 +33,11 @@ const IconText = ({ icon, text }) => (
 );
 
 
-const ArticleCard = () => {
+const ArticleCard = ({ posts, loading }) => {
   const navigate = useNavigate()
+
   return (<List
+    loading={loading}
     itemLayout="vertical"
     size="large"
     pagination={{
@@ -44,10 +46,9 @@ const ArticleCard = () => {
       },
       pageSize: 3,
     }}
-    dataSource={data}
+    dataSource={posts}
     footer={
       <div>
-        <b>ant design</b> footer part
       </div>
     }
     renderItem={(item) => (
@@ -69,10 +70,10 @@ const ArticleCard = () => {
         <List.Item.Meta
           avatar={
             <Popover content={content} title="Title">
-              <Avatar onClick={() => navigate(`/user/${item.username}`)} src={item.avatar} />
+              <Avatar onClick={() => navigate(`/user/${item.username}`)} src={item.avatar || 'https://www.w3schools.com/howto/img_avatar.png'} />
             </Popover>
           }
-          title={<a href={item.href}>{item.title}</a>}
+          title={<Link onClick={() => navigate(`/posts/${item.slug}`)}>{item.title}</Link>}
           description={item.description}
         />
         {item.content}

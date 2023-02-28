@@ -4,11 +4,11 @@ export const AuthContext = React.createContext(null);
 import Cookies from 'js-cookie'
 import jwtDecode from 'jwt-decode'
 
-const getUser = (token) => {
+export const getUser = (token) => {
   try {
     if (!token) token = Cookies.get('accessToken')
     const result = jwtDecode(token)
-    return result?.data || null
+    return result || null
   } catch (error) {
     return null
   }

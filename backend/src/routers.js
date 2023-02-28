@@ -1,5 +1,5 @@
 import express from 'express'
-import { CategoryRouters, chatMessageRouters, chatRoutes, userRoutes, } from './modules/index.js'
+import { CategoryRouters, chatMessageRouters, chatRoutes, userRoutes, postRouters } from './modules/index.js'
 
 const router = express.Router()
 
@@ -7,6 +7,7 @@ router.use('/api/auth', userRoutes)
 router.use('/api/chat', chatRoutes)
 router.use('/api/message', chatMessageRouters)
 router.use('/api/category', CategoryRouters)
+router.use('/api/posts', postRouters)
 router.use('/api', (req, res) =>
   res.status(200).json({ status: 'sucess', message: 'API is working' })
 )

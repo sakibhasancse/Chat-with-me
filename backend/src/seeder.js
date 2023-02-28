@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 import slugify from 'slugify'
 
 import {
-  ProductCollection,
+  PostCollection,
   UserCollection
 } from './modules/models.js'
 import users from './data/users.js'
@@ -32,7 +32,7 @@ const importData = async () => {
   try {
     // Seed new data
     await seedUsers(users)
-    await seedProducts(products)
+    await seedposts(posts)
 
     console.log('Successfully seeded all data')
     process.exit()

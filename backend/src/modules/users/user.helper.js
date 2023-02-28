@@ -4,7 +4,9 @@ import { appHelper } from '../helpers.js'
 import { UserCollection } from '../models.js'
 
 export const getAUser = async (query = {}) => {
+  console.log({ query })
   const user = await UserCollection.findOne(query)
+  console.log({ user })
   return user
 }
 
@@ -31,7 +33,8 @@ export const getAuthTokens = async (user = {}) => {
     email,
     name
   }
-  const signAccessToken = appHelper.signJwtToken({ data }, process.env.ACCESS_TOKEN_SECRET, '6h')
+  console.log({ data, user })
+  const signAccessToken = appHelper.signJwtToken(data, process.env.ACCESS_TOKEN_SECRET, '6h')
   const signRefreshToken = appHelper.signJwtToken({ userId: _id }, process.env.REFRESH_TOKEN_SECRET, '60d')
   const [accessToken, refreshToken] = await Promise.all([signAccessToken, signRefreshToken]);
   return { accessToken, refreshToken };

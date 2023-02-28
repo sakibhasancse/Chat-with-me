@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import Cookie from "js-cookie";
+import { size } from 'lodash'
 
 import { validateInputFields } from "./login-helper";
 import apiRequest from "../../services/ApiRequest/apiRequest.service";
 import { useAuth } from "../../context/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
-import { Form, Input, Button, Checkbox, Row, Col } from 'antd';
+import { Form, Input, Button, Checkbox, Row, Col, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './style.css';
 
@@ -24,33 +25,36 @@ const Login = () => {
     if (errors.length) setErrors(errors);
     else {
       setErrors({});
-      const response = await apiRequest.post("/auth/login", values);
-      console.log({ response })
-      if (response.error) {
-        setErrors({ error: response.error });
-      } else {
+      try {
+        const response = await apiRequest.post("/auth/login", values);
+        console.log({ response })
         const from = location.state?.from?.pathname || "/";
         console.log('s', auth)
         auth.signIn(response?.tokens || "token", () => {
           navigate(from, { replace: true });
         });
+      } catch (error) {
+        console.log({ error })
+        setErrors(error?.response?.data || { message: error.message });
+        // message.error(error?.response?.data?.message, 6);
       }
     }
     setLoading(false);
   };
 
-  const handleChange = (event) => {
-    setValues((oldValue) => ({
-      ...oldValue,
-      [event.target.name]: event.target.value,
-    }));
+  const handleChange = (value) => {
+    // setValues((oldValue) => ({
+    //   ...oldValue,
+    //   value,
+    // }));
+    setErrors({});
   };
 
-
-  console.log({ errors, loading });
   return (
+
     <Row type="flex" justify="center" align="middle" style={{ minHeight: '100vh' }}>
       <div className="align">
+        <span style={{ color: "red" }}>{errors.message}</span>
         <Form
           title="Login from"
           name="normal_login"
@@ -59,6 +63,8 @@ const Login = () => {
             remember: true,
           }}
           onFinish={handleSubmit}
+          autoComplete="off"
+          onValuesChange={handleChange}
         >
           <Col><p>Please Login with your Account</p></Col>
           <Form.Item
@@ -97,9 +103,9 @@ const Login = () => {
         </a>
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="login-form-button">
+            <Button type="primary" disabled={size(errors)} loading={loading} htmlType="submit" className="login-form-button">
               Log in
-        </Button>
+          </Button>
         Or <a href="">register now!</a>
           </Form.Item>
         </Form>
