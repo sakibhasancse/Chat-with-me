@@ -212,6 +212,10 @@ const InboxProvider = ({ children }) => {
     socket.emit("endCall", { id: call.fromUserId });
   }
 
+  const handleMessage = (userId) => {
+    console.log({ userId })
+  }
+
   return (
     <InboxContext.Provider value={{
       setMyMicStatus,
@@ -223,7 +227,8 @@ const InboxProvider = ({ children }) => {
       setCurrentChatId, callUser,
       leaveCall, screenShare, setScreenShare,
       connectionRef,
-      cancelCall
+      cancelCall,
+      handleMessage
     }}>
       {children}
     </InboxContext.Provider>

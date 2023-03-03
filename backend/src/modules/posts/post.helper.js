@@ -68,7 +68,7 @@ export const postsWishListPipeline = (userId) => {
   return wishListPipeline
 }
 
-export const userInfoPipeline = {
+export const userInfoPipeline = [{
   $lookup: {
     // localField: 'createdBy',
     // foreignField: '_id',
@@ -91,7 +91,16 @@ export const userInfoPipeline = {
       }
     ]
   }
+},
+{
+  $addFields: {
+    creator: {
+      $first: '$creator'
+    }
+  }
+
 }
+]
 
 export const getPostsWithOtherInfo = async (params) => {
 
@@ -102,7 +111,7 @@ export const getPostsWithOtherInfo = async (params) => {
       $match: query
     },
     // ...postsWishListPipeline(userId),
-    userInfoPipeline,
+    ...userInfoPipeline,
     {
       $sort: sort
     },

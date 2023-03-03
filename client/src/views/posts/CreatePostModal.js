@@ -1,7 +1,9 @@
-import { Button, Modal } from 'antd';
+import { Button, message, Modal } from 'antd';
 import Input from 'antd/es/input/Input';
 import TextArea from 'antd/es/input/TextArea';
 import { useRef, useState } from 'react';
+import { toast } from 'react-toastify';
+import { getUser } from '../../context/AuthContext';
 import { createPosts } from '../../data/posts';
 import TagsInputBox from './TagsInput';
 
@@ -31,9 +33,12 @@ const CreatePostModal = ({ open, setOpen, setPosts }) => {
   const handleOk = async () => {
     setLoading(true);
     const response = await createPosts(values)
-    if (response) {
-      console.log({ response })
+    console.log({ response })
+    if (response?._id) {
+      response.creator = getUser()
       setPosts(oldPosts => [response, ...oldPosts])
+    } else {
+      toast.error(response?.message)
     }
     setLoading(false);
     setOpen(false);
