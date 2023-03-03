@@ -27,7 +27,6 @@ export const getPosts = async (req, res, next) => {
         userId,
         options
       })
-      console.log({ posts })
     } else {
       posts = await postHelper.getPosts(searchQuery, options)
     }

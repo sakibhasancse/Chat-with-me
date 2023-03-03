@@ -14,23 +14,28 @@ export const getUser = (token) => {
   }
 }
 
+export const setUserToken = (tokens = {}) => {
+  Cookies.set('accessToken', tokens.accessToken, '30d')
+  Cookies.set('refreshToken', tokens.refreshToken, '30d')
+}
+
+export const removeUserToken = () => {
+  Cookies.remove('accessToken')
+  Cookies.remove('refreshToken')
+}
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = React.useState(getUser());
 
   const signIn = (tokens = {}, callback) => {
-    console.log({ tokens })
-    const { accessToken, refreshToken } = tokens
-    Cookies.set('accessToken', accessToken, '30d')
-    Cookies.set('refreshToken', refreshToken, '30d')
-
-    setUser(getUser(accessToken));
+    setUserToken(tokens)
+    setUser(getUser(tokens.accessToken));
     callback();
   };
 
   const signOut = (callback) => {
     setUser(null);
-    Cookies.remove('accessToken')
-    Cookies.remove('refreshToken')
+    removeUserToken()
     callback();
   };
 

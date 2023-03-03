@@ -15,9 +15,13 @@ export const Private = async (req, res, next) => {
     const token = authorization.replace('Bearer ', '')
 
     if (!token) throw new CustomError(401, 'Unauthenticated request')
-
+    console.log({ token })
     const decoded = await verifyJwtToken(token, process.env.ACCESS_TOKEN_SECRET)
-    const query = {_id: decoded.userId}
+    console.log({ decoded })
+    if (!decoded) {
+      throw new CustomError(404, 'Unauthenticated user')
+    }
+    const query = { _id: decoded.userId }
     const user = await userHelper.getAUser(query)
     if (!user) throw new CustomError(404, 'Unauthenticated user')
     req.user = { userId: user._id, ...user }

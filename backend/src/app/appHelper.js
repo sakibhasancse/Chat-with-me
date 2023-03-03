@@ -28,7 +28,7 @@ export const verifyJwtToken = (token, secretKey = '') => {
   return new Promise((resolve, reject) => {
     jwt.verify(token, secretKey, (err, data) => {
       if (err) {
-        reject({ isError: true, message: 'Invalid operation!' });
+        reject({ isError: true, message: 'Token is expires' });
       } else {
         resolve(data);
       }

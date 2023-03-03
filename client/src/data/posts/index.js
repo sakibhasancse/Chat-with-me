@@ -13,8 +13,16 @@ export const getAllPosts = async (queryPath) => {
 }
 
 export const createPosts = async (content) => {
-  const response = await apiRequest.post('/posts', content)
-  return response || {}
+  try {
+    const response = await apiRequest.post('/posts', content)
+    return response || {}
+  } catch (error) {
+    return error?.response?.data || {
+      error: error?.message,
+      status: "error"
+    }
+  }
+
 }
 
 export const removePosts = async (postId) => {
