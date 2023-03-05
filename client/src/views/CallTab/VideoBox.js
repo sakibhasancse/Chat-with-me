@@ -1,20 +1,12 @@
-import React, { useState, useContext, useEffect, useRef } from "react";
-import { Input, Button, Tooltip, Modal, message, Row, Col, } from "antd";
-import { useLocation } from 'react-router-dom'
-import queryString from 'query-string';
-import { size } from 'lodash'
-import InboxContext from '../../context/Inbox/inboxContext';
+import React, { useContext, useEffect } from "react";
+
 import { AuthContext } from '../../context/AuthContext';
-import Msg from "../../assets/images/msg.svg";
-import ScreenShare from '../../assets/images/share_screen.svg'
-import VideoIcon from "../../assets/images/video.svg";
 import VideoOff from "../../assets/images/video-off.svg";
-import Msg_Illus from "../../assets/images/msg_illus.svg";
 import BottomIcons from "./BottomIcons";
-import Avatar from "antd/es/avatar/avatar";
+import { CallContext } from "../../context/callContext";
 
 const VideoBox = ({ isCallAcceptedTab }) => {
-  const { stream, call = {}, answerCall, myVdoStatus, myVideo, setStream, myMicStatus, userVideo, setMyVdoStatus, setMessages, setCurrentChatId, userVdoStatus, userMicStatus, sendNewMessage } = useContext(InboxContext);
+  const { stream, call = {}, myVdoStatus, myVideo, setStream } = useContext(CallContext);
   const { user } = useContext(AuthContext)
   const handleFullScreen = () => {
 

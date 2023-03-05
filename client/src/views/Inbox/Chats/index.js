@@ -15,25 +15,39 @@ const Chats = () => {
   const [loading, setLoading] = useState(false);
 
   const { chatList = [], setChatList } = useContext(InboxContext);
+  const [totalDocuments, setTotalDocuments] = useState(0)
+  const [skip, setSkip] = useState(0)
 
   const navigator = useNavigate()
 
-  const loadMoreData = async () => {
+  const getChatListAndDocuments = async (currentSkip = 0) => {
     if (loading) return;
     setLoading(true);
-
+    // `/chat?skip=${currentSkip || skip}&limit=10`
     const response = await getChatList()
-    if (size(response)) setChatList((oldChatList) => [...oldChatList, ...response]);
+    if (size(response)) {
+      console.log({ response })
+      setTotalDocuments(response.totalDocuments)
+      setChatList((oldChatList) => [...oldChatList, ...response.chatList]);
+    }
     setLoading(false);
+  }
+
+  const loadMoreData = async () => {
+    console.log('calling')
+    setSkip(oldSkip => oldSkip + 10)
+    getChatListAndDocuments(skip + 10)
   };
 
   const handleMessage = (values) => {
     setMessages(values?.messages || [])
     navigator(`/inbox/${values._id}`)
   }
-  console.log({ chatList })
+
+
   useEffect(() => {
-    loadMoreData();
+    console.log({ chatList })
+    return () => getChatListAndDocuments();
   }, []);
 
   return (
@@ -47,9 +61,9 @@ const Chats = () => {
       }}
     >
       <InfiniteScroll
-        dataLength={chatList.length}
-        // next={loadMoreData}
-        hasMore={chatList.length < 50}
+        dataLength={totalDocuments}
+        next={loadMoreData}
+        hasMore={chatList.length < totalDocuments}
         loader={
           <Skeleton
             avatar
@@ -57,7 +71,7 @@ const Chats = () => {
             active
           />
         }
-        endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
+        // endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
         scrollableTarget="scrollableDiv"
       >
         <List
@@ -69,7 +83,7 @@ const Chats = () => {
                 title={<div onClick={() => handleMessage(item)}>{item.participantOtherUsers[0]?.name}</div>}
                 description={<div>
                   <p>{item.lastMessage}</p>
-                  <h4>{moment(item.lastMessageAt).fromNow()}</h4>
+                  <h4>{moment(item.lastMessageAt || item.createdAt).fromNow()}</h4>
                 </div>}
               />
               <ChatRightButton />

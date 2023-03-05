@@ -1,29 +1,22 @@
-import React, { useState, useContext, useEffect, useRef } from "react";
-
-import { Input, Button, Tooltip, Modal, message, Row, Col, } from "antd";
+import React, { useState, useContext, useEffect } from "react";
+import { Row, Col } from "antd";
 import { useLocation } from 'react-router-dom'
 import queryString from 'query-string';
 import { size } from 'lodash'
-import InboxContext from '../../context/Inbox/inboxContext';
-import { AuthContext } from '../../context/AuthContext';
-import Msg from "../../assets/images/msg.svg";
-import ScreenShare from '../../assets/images/share_screen.svg'
-import VideoIcon from "../../assets/images/video.svg";
-import VideoOff from "../../assets/images/video-off.svg";
-import Msg_Illus from "../../assets/images/msg_illus.svg";
 
+
+import { AuthContext } from '../../context/AuthContext';
 import './call.css'
-import { UserOutlined } from "@ant-design/icons";
-import Avatar from "antd/es/avatar/avatar";
 import socket from "../../socket";
 import { getChatList } from "../../data/chat";
 import UserListBox from "./UserListBox";
 import VideoBox from "./VideoBox";
 import CancelCallTab from "./CancelCallTab";
-const { Search } = Input;
+import { CallContext } from "../../context/callContext";
+
 
 const CallTab = () => {
-  const { stream, setChatList, call = {}, answerCall, leaveCall, myVdoStatus, myVideo, myMicStatus, userVideo, setMyVdoStatus, setMessages, setCurrentChatId, userVdoStatus, userMicStatus, sendNewMessage, callUser } = useContext(InboxContext);
+  const { stream, setChatList, leaveCall, userVideo, setMyVdoStatus, setMessages, setCurrentChatId, callUser } = useContext(CallContext);
   const { user } = useContext(AuthContext)
   const [message, setMessage] = useState('')
   const [isWrongUrl, setIsWrongUrl] = useState(false)
