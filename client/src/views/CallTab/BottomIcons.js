@@ -1,22 +1,19 @@
-import React, { useState, useContext, useEffect, useRef } from "react";
-import { Input, Button, Tooltip, Modal, message, Row, Col, Dropdown, Space } from "antd";
-import { useLocation } from 'react-router-dom'
-import { AudioMutedOutlined, CheckOutlined, DownOutlined, SettingOutlined, SmileOutlined, UserDeleteOutlined } from '@ant-design/icons';
+import React, { useContext } from "react";
+import { message, Dropdown } from "antd";
+import { AudioMutedOutlined, CheckOutlined, SettingOutlined, SmileOutlined, UserDeleteOutlined } from '@ant-design/icons';
 
-import queryString from 'query-string';
-import { size } from 'lodash'
-import InboxContext from '../../context/Inbox/inboxContext';
 import Msg from "../../assets/images/msg.svg";
 import ScreenShare from '../../assets/images/share_screen.svg'
 import VideoIcon from "../../assets/images/video.svg";
 import VideoOff from "../../assets/images/video-off.svg";
-import Msg_Illus from "../../assets/images/msg_illus.svg";
 import socket from '../../socket'
+import { CallContext } from "../../context/callContext";
+
 const BottomIcons = () => {
   const { stream, call = {},
     setMyMicStatus, myVdoStatus, myVideo,
     myMicStatus, setMyVdoStatus,
-    screenShare, setScreenShare, setStream, connectionRef } = useContext(InboxContext);
+    screenShare, setScreenShare, setStream, connectionRef } = useContext(CallContext);
 
   const handleVideoSharing = () => {
 

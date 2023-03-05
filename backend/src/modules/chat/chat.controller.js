@@ -16,19 +16,24 @@ export const createChat = async (req, res, next) => {
     const participantUser = await userHelper.getAUser({ _id: body.userId })
 
     if (!participantUser) throw new CustomError(404, 'Participant user not found')
-
+    console.log({
+      userIds: body.userId
+      ,
+      userId: user.userId
+    })
     const alreadyExistsUser = await ChatCollection.findOne({
       participants: {
-        $elemMatch: {
-          $and: [
-            {
+        $all: [
+          {
+            $elemMatch: {
               userId: body.userId
-            },
-            {
+            }
+          },
+          {
+            $elemMatch: {
               userId: user.userId
             }
-          ]
-        }
+          }]
       }
     })
 

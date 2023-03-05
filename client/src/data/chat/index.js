@@ -12,8 +12,7 @@ export const createChat = async (userId) => {
   const response = await apiRequest.post('/chat', {
     userId
   })
-  console.log({ response })
-  return response?.data || {}
+  return response || {}
 }
 
 

@@ -1,16 +1,19 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { Button, Modal } from "antd";
-
-import Teams from '../../../assets/audio/teams.mp3'
-import Phone from "../../../assets/images/phone.gif";
-import InboxContext from '../../../context/Inbox/inboxContext';
-import "./Options.module.css";
 import { PhoneOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router";
 
+import Teams from '../../../assets/audio/teams.mp3'
+import Phone from "../../../assets/images/phone.gif";
+import { CallContext } from "../../../context/callContext";
+import InboxContext from "../../../context/Inbox/inboxContext";
+import "./Options.module.css";
+
 const IncomingCall = () => {
-  const { call = {}, answerCall, currentChatId = '', cancelCall } = useContext(InboxContext);
+  const { call = {}, answerCall, cancelCall } = useContext(CallContext);
+  const { currentChatId = '' } = useContext(InboxContext);
   const [showCallingModal, setShowCallingModal] = useState(false)
+
   const Audio = useRef();
 
   const navigator = useNavigate()

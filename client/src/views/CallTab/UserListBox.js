@@ -1,12 +1,13 @@
+import { useContext } from "react"
 import { UserOutlined } from "@ant-design/icons"
 import { Button } from "antd"
 import Avatar from "antd/es/avatar/avatar"
-import InboxContext from '../../context/Inbox/inboxContext';
+
 import VideoOff from "../../assets/images/video-off.svg";
-import { useContext } from "react"
+import { CallContext } from "../../context/callContext";
 
 const UserListBox = ({ userList = [], callUser, calling = false, cancelCall, isCallAcceptedTab = false }) => {
-  const { call = {}, userVideo, userVdoStatus, userMicStatus } = useContext(InboxContext);
+  const { call = {}, userVideo, userVdoStatus, userMicStatus } = useContext(CallContext);
   console.log({ call, isCallAcceptedTab, userVideo, calling })
 
   const handleFullScreen = (event) => {

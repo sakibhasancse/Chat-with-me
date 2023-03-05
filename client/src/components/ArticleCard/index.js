@@ -14,7 +14,7 @@ const IconText = ({ icon, text }) => (
   </Space>
 );
 
-const ArticleCard = ({ posts, loading }) => {
+const ArticleCard = ({ posts = [], loading = false }) => {
   const { handleMessage } = useContext(InboxContext);
   const navigate = useNavigate();
 
@@ -68,13 +68,13 @@ const ArticleCard = ({ posts, loading }) => {
                       style={{
                         verticalAlign: "middle",
                       }}
-                      onClick={() => navigate(`/user/${item.creator.userId}`)}
+                      onClick={() => navigate(`/user/${item?.creator?.userId}`)}
                       src={
                         item.avatar ||
                         "https://www.w3schools.com/howto/img_avatar.png"
                       }
                     />
-                    {item.creator.name}
+                    {item.creator?.name}
                     <br />
                     <br />
                     <Button
@@ -82,31 +82,30 @@ const ArticleCard = ({ posts, loading }) => {
                       style={{
                         verticalAlign: "middle",
                       }}
-                      onClick={() => navigate(`/user/${item.creator.userId}`)}
+                      onClick={() => navigate(`/user/${item?.creator?.userId}`)}
                     >
                       View profile
                     </Button>
 
                     {
-                      item.creator.userId !== getUser()?.userId && (
+                      item?.creator?.userId !== getUser()?.userId && (
                         <Button
                           size="small"
                           style={{
                             margin: "0 16px",
                             verticalAlign: "middle",
                           }}
-                          onClick={() => handleMessage(item.creator.userId)}
+                          onClick={() => handleMessage(item.creator?.userId)}
                         >
                           Send message
                         </Button>
                       )
                     }
-
                   </div>
                 }
               >
                 <Avatar
-                  onClick={() => navigate(`/user/${item.creator.userId}`)}
+                  onClick={() => navigate(`/user/${item?.creator?.userId}`)}
                   src={
                     item.avatar ||
                     "https://www.w3schools.com/howto/img_avatar.png"
@@ -118,7 +117,7 @@ const ArticleCard = ({ posts, loading }) => {
               <div>
                 <Link onClick={() => navigate(`/user/${item.creator.userId}`)}>
                   {" "}
-                  {item.creator.name}
+                  {item.creator?.name}
                 </Link>
                 <br />
                 <p style={{ cursor: "pointer" }}>{item.title}</p>
