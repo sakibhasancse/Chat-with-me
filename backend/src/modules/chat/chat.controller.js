@@ -185,8 +185,14 @@ export const GetChats = async (req, res, next) => {
         createdAt: 1,
       }
     }])
-    console.log({ user, chatList })
-    res.status(200).json(chatList)
+    const totalDocuments = await ChatCollection.countDocuments(matchQuery)
+    const responseData = {
+      chatList,
+      totalDocuments
+    }
+    chatList.totalDocuments =
+      console.log({ user, chatList })
+    res.status(200).json(responseData)
   } catch (error) {
     return next(error)
   }

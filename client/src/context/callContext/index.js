@@ -1,8 +1,7 @@
 
-import { useRef, useEffect, useState, useContext } from "react";
+import { useRef, useEffect, useState, useContext, createContext } from "react";
 import Peer from "simple-peer";
 
-import CallContext from "./callContext"
 import { AuthContext } from '../AuthContext/index'
 import socket from "../../socket";
 

@@ -5,7 +5,8 @@ export const getChatList = async (queryPath = '') => {
   if (queryPath) path = path + queryPath
   console.log({ path, queryPath })
   const response = await apiRequest.get(path)
-  return response?.data || {}
+  console.log({ response })
+  return response || {}
 }
 
 export const createChat = async (userId) => {
