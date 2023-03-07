@@ -71,7 +71,6 @@ const Chats = () => {
             active
           />
         }
-        // endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
         scrollableTarget="scrollableDiv"
       >
         <List
