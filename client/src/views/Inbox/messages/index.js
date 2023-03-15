@@ -13,7 +13,7 @@ import ChatTopBar from "../ChatTopBar";
 const ChatBox = () => {
   const { sendNewMessage, messages = [], setMessages, setCurrentChatId } = useContext(InboxContext);
   const { user } = useContext(AuthContext);
-
+  console.log({ messages })
   const [message, setMessage] = useState('')
   const [chatId, setChatId] = useState('')
 
