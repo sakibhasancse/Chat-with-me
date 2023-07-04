@@ -128,7 +128,7 @@ const MyProfile = () => {
           </Form>
         </Col>
       </Row>
-    </div >
+    </div>
   )
 }
 
