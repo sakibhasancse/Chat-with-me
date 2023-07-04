@@ -39,3 +39,44 @@ export const getAuthTokens = async (user = {}) => {
   const [accessToken, refreshToken] = await Promise.all([signAccessToken, signRefreshToken]);
   return { accessToken, refreshToken };
 }
+
+export const prepareProfileData = (params) => {
+  const updatedData = {}
+  if (params.hasOwnProperty('name')) {
+    updatedData.name = params.name
+  }
+  if (params.hasOwnProperty('phone')) {
+    updatedData.phone = params.phone
+  }
+  if (params.hasOwnProperty('description')) {
+    updatedData.description = params.description
+  }
+  if (params.hasOwnProperty('designation')) {
+    updatedData.designation = params.designation
+  }
+  if (params.hasOwnProperty('name')) {
+    updatedData.name = params.name
+  }
+  if (params.hasOwnProperty('profile_url')) {
+    updatedData.profile_url = params.profile_url
+  }
+  if (params.hasOwnProperty('address')) {
+    updatedData.address = params.address
+  }
+
+  //Links
+
+  if (params.hasOwnProperty('website')) {
+    updatedData['links.website'] = params.website
+  }
+  if (params.hasOwnProperty('tweeter')) {
+    updatedData['links.tweeter'] = params.tweeter
+  }
+  if (params.hasOwnProperty('instragram')) {
+    updatedData['links.instragram'] = params.instragram
+  }
+  if (params.hasOwnProperty('facebook')) {
+    updatedData['links.facebook'] = params.facebook
+  }
+  return updatedData
+}

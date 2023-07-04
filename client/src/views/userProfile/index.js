@@ -31,35 +31,12 @@ const UserProfile = () => {
     'Address : sakib@gmail.com',
     'Mobile : sakib@gmail.com'
   ])
-  const [socielInfo, setSocielInfo] = useState( [
-    {
-      title: 'Ant Design Title 1',
-    },
-    {
-      title: 'Ant Design Title 2',
-    },
-    {
-      title: 'Ant Design Title 3',
-    },
-    {
-      title: 'Ant Design Title 4',
-    },
-  ])
+
 
   const [user, setUser] = useState(UserList[0]);
   const [color, setColor] = useState(ColorList[0]);
   const [gap, setGap] = useState(GapList[0]);
 
-  const changeUser = () => {
-    const index = UserList.indexOf(user);
-    setUser(index < UserList.length - 1 ? UserList[index + 1] : UserList[0]);
-    setColor(index < ColorList.length - 1 ? ColorList[index + 1] : ColorList[0]);
-  };
-
-  const changeGap = () => {
-    const index = GapList.indexOf(gap);
-    setGap(index < GapList.length - 1 ? GapList[index + 1] : GapList[0]);
-  };
   const columns = [
     {
       title: 'Social Media',
@@ -150,11 +127,6 @@ const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender
     ) : null;
 
   return (
-    <did>
-      User profile {username}
-      <div style={{ padding: "50px" }}>
-        <Button onClick={initiateMessage}>Send messages</Button>
-      </div>
       <div>
         <Row justify="space-around" align="middle" >
           <Col span={24} xs={20} xl={20}>
@@ -183,7 +155,7 @@ const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender
                   <Space direction="vertical">
                     <Space wrap>
                       <Button type="primary" shape="round" size="large">Follow</Button>
-                      <Button shape="round" size="large">Message</Button>
+                      <Button shape="round" size="large" onClick={initiateMessage}>Message</Button>
                     </Space>
                   </Space>
                 </Card>
@@ -253,9 +225,6 @@ const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender
           </Col>
         </Row>
       </div>
-
-    </did >
-
   )
 }
 export default UserProfile
