@@ -54,182 +54,184 @@ const MyProfile = () => {
 
   return (
     <div>
-      <Row justify="space-around" align="middle" >
-        <Col span={24} xs={20} xl={14}>
-          <h4>My profile</h4>
-          <Form
-            // form={form}
-            onFinish={onFinish}
-            ref={formRef}
-            layout="vertical">
-            <Row >
-              <Col xs={8} xl={8} align="middle">
-                <div style={{
-                  paddingTop: "8px"
-                }}>
-                  <Avatar
-                    style={{
-                      backgroundColor: color,
-                      verticalAlign: 'middle'
-                    }}
-                    size={{
-                      xs: 90,
-                      sm: 120,
-                      md: 120,
-                      lg: 140,
-                      xl: 152,
-                      xxl: 160,
-                    }}
-                    gap={gap}
-                  >
-                    {user}
-                  </Avatar>
-                </div>
-              </Col>
-              <Col span={16} xs={16} xl={16}>
-                <Form.Item
-                  label="Disply name"
-                  tooltip={{
-                    title: 'Enter your name',
-                    icon: <InfoCircleOutlined />,
+      {loading ? (<h2>Loading</h2>) : (
+        <Row justify="space-around" align="middle" >
+          <Col span={24} xs={20} xl={14}>
+            <h4>My profile</h4>
+            <Form
+              // form={form}
+              onFinish={onFinish}
+              ref={formRef}
+              layout="vertical">
+              <Row >
+                <Col xs={8} xl={8} align="middle">
+                  <div style={{
+                    paddingTop: "8px"
                   }}>
-                  <Input
-                    name="name"
-                    placeholder="Enter your name"
-                    value={profile?.name}
-                    onChange={(e) => { setProfile((oldValue) => ({ ...oldValue, name: e.target.value })) }}
-                  />
-                </Form.Item>
+                    <Avatar
+                      style={{
+                        backgroundColor: color,
+                        verticalAlign: 'middle'
+                      }}
+                      size={{
+                        xs: 90,
+                        sm: 120,
+                        md: 120,
+                        lg: 140,
+                        xl: 152,
+                        xxl: 160,
+                      }}
+                      gap={gap}
+                    >
+                      {user}
+                    </Avatar>
+                  </div>
+                </Col>
+                <Col span={16} xs={16} xl={16}>
+                  <Form.Item
+                    label="Disply name"
+                    tooltip={{
+                      title: 'Enter your name',
+                      icon: <InfoCircleOutlined />,
+                    }}>
+                    <Input
+                      name="name"
+                      placeholder="Enter your name"
+                      value={profile?.name}
+                      onChange={(e) => { setProfile((oldValue) => ({ ...oldValue, name: e.target.value })) }}
+                    />
+                  </Form.Item>
 
 
-                <Form.Item
-                  label="Job title"
-                  tooltip={{
-                    title: 'Enter your job title',
-                    icon: <InfoCircleOutlined />,
-                  }}
-                >
-                  <Input
-                    placeholder="Enter your job title"
-                    value={profile?.designation}
-                    onChange={(e) => { setProfile((oldValue) => ({ ...oldValue, designation: e.target.value })) }}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
+                  <Form.Item
+                    label="Job title"
+                    tooltip={{
+                      title: 'Enter your job title',
+                      icon: <InfoCircleOutlined />,
+                    }}
+                  >
+                    <Input
+                      placeholder="Enter your job title"
+                      value={profile?.designation}
+                      onChange={(e) => { setProfile((oldValue) => ({ ...oldValue, designation: e.target.value })) }}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
 
 
-            <Form.Item
-              label="Email"
-              tooltip={{
-                title: 'Enter your Email',
-                icon: <InfoCircleOutlined />,
-              }}
-            >
-              <Input
-                placeholder="Enter your Email"
-                disabled
-                value={profile?.email}
-                onChange={(e) => { setProfile((oldValue) => ({ ...oldValue, email: e.target.value })) }}
-              />
-            </Form.Item>
-            <Form.Item
-              label="phoneNumber"
-              tooltip={{
-                title: 'Enter your phone',
-                icon: <InfoCircleOutlined />,
-              }}
-            >
-              <Input
-                placeholder="Enter your phone"
-                value={profile?.phoneNumber}
-                type="number"
-                onChange={(e) => { setProfile((oldValue) => ({ ...oldValue, phoneNumber: e.target.value })) }}
-              />
-            </Form.Item>
+              <Form.Item
+                label="Email"
+                tooltip={{
+                  title: 'Enter your Email',
+                  icon: <InfoCircleOutlined />,
+                }}
+              >
+                <Input
+                  placeholder="Enter your Email"
+                  disabled
+                  value={profile?.email}
+                  onChange={(e) => { setProfile((oldValue) => ({ ...oldValue, email: e.target.value })) }}
+                />
+              </Form.Item>
+              <Form.Item
+                label="phoneNumber"
+                tooltip={{
+                  title: 'Enter your phone',
+                  icon: <InfoCircleOutlined />,
+                }}
+              >
+                <Input
+                  placeholder="Enter your phone"
+                  value={profile?.phoneNumber}
+                  type="number"
+                  onChange={(e) => { setProfile((oldValue) => ({ ...oldValue, phoneNumber: e.target.value })) }}
+                />
+              </Form.Item>
 
-            <p>Sociale links</p>
+              <p>Sociale links</p>
 
-            <Form.Item
-              label="Website"
-              tooltip={{
-                title: 'Enter your website',
-                icon: <InfoCircleOutlined />,
-              }}
-            >
-              <Input
-                placeholder="Enter your website"
-                value={profile?.website}
-                type="text"
-                onChange={(e) => { setProfile((oldValue) => ({ ...oldValue, website: e.target.value })) }}
-              />
-            </Form.Item>
+              <Form.Item
+                label="Website"
+                tooltip={{
+                  title: 'Enter your website',
+                  icon: <InfoCircleOutlined />,
+                }}
+              >
+                <Input
+                  placeholder="Enter your website"
+                  value={profile?.website}
+                  type="text"
+                  onChange={(e) => { setProfile((oldValue) => ({ ...oldValue, website: e.target.value })) }}
+                />
+              </Form.Item>
 
-            <Form.Item
-              label="Facebook"
-              tooltip={{
-                title: 'Enter your facebook',
-                icon: <InfoCircleOutlined />,
-              }}
-            >
-              <Input
-                placeholder="Enter your facebook"
-                value={profile?.facebook}
-                type="text"
-                onChange={(e) => { setProfile((oldValue) => ({ ...oldValue, facebook: e.target.value })) }}
-              />
-            </Form.Item>
-            <Form.Item
-              label="Instragram"
-              tooltip={{
-                title: 'Enter your instragram',
-                icon: <InfoCircleOutlined />,
-              }}
-            >
-              <Input
-                placeholder="Enter your instragram"
-                value={profile?.instragram}
-                type="text"
-                onChange={(e) => { setProfile((oldValue) => ({ ...oldValue, instragram: e.target.value })) }}
-              />
-            </Form.Item>
-            <Form.Item
-              label="tweeter"
-              tooltip={{
-                title: 'Enter your tweeter',
-                icon: <InfoCircleOutlined />,
-              }}
-            >
-              <Input
-                placeholder="Enter your tweeter"
-                value={profile?.tweeter}
-                type="text"
-                onChange={(e) => { setProfile((oldValue) => ({ ...oldValue, tweeter: e.target.value })) }}
-              />
-            </Form.Item>
+              <Form.Item
+                label="Facebook"
+                tooltip={{
+                  title: 'Enter your facebook',
+                  icon: <InfoCircleOutlined />,
+                }}
+              >
+                <Input
+                  placeholder="Enter your facebook"
+                  value={profile?.facebook}
+                  type="text"
+                  onChange={(e) => { setProfile((oldValue) => ({ ...oldValue, facebook: e.target.value })) }}
+                />
+              </Form.Item>
+              <Form.Item
+                label="Instragram"
+                tooltip={{
+                  title: 'Enter your instragram',
+                  icon: <InfoCircleOutlined />,
+                }}
+              >
+                <Input
+                  placeholder="Enter your instragram"
+                  value={profile?.instragram}
+                  type="text"
+                  onChange={(e) => { setProfile((oldValue) => ({ ...oldValue, instragram: e.target.value })) }}
+                />
+              </Form.Item>
+              <Form.Item
+                label="tweeter"
+                tooltip={{
+                  title: 'Enter your tweeter',
+                  icon: <InfoCircleOutlined />,
+                }}
+              >
+                <Input
+                  placeholder="Enter your tweeter"
+                  value={profile?.tweeter}
+                  type="text"
+                  onChange={(e) => { setProfile((oldValue) => ({ ...oldValue, tweeter: e.target.value })) }}
+                />
+              </Form.Item>
 
 
-            <Form.Item
-              label="Description"
-              tooltip={{
-                title: 'Description',
-                icon: <InfoCircleOutlined />,
-              }}
-            >
-              <TextArea rows={4} placeholder="Together with my team, i create winners in the digital transformation .... " maxLength={1000}
-                value={profile?.description}
-                onChange={(e) => { setProfile((oldValue) => ({ ...oldValue, description: e.target.value })) }}
-              />
-            </Form.Item>
-            <Form.Item >
-              <Button type="primary" disabled={buttonDisabled} htmlType="submit">Update</Button>
-            </Form.Item>
-            {/* <Button htmlType="button" onClick={onReset}>
+              <Form.Item
+                label="Description"
+                tooltip={{
+                  title: 'Description',
+                  icon: <InfoCircleOutlined />,
+                }}
+              >
+                <TextArea rows={4} placeholder="Together with my team, i create winners in the digital transformation .... " maxLength={1000}
+                  value={profile?.description}
+                  onChange={(e) => { setProfile((oldValue) => ({ ...oldValue, description: e.target.value })) }}
+                />
+              </Form.Item>
+              <Form.Item >
+                <Button type="primary" disabled={buttonDisabled} htmlType="submit">Update</Button>
+              </Form.Item>
+              {/* <Button htmlType="button" onClick={onReset}>
               Reset
              </Button> */}
-          </Form>
-        </Col>
-      </Row>
+            </Form>
+          </Col>
+        </Row>
+      )}
     </div>
   )
 }

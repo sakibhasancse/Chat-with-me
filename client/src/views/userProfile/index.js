@@ -14,17 +14,56 @@ import { useNavigate, useParams } from 'react-router';
 import { createChat } from '../../data/chat'
 import Card from 'antd/es/card/Card';
 import Link from 'antd/es/typography/Link';
+import { getUserProfile } from '../../data/users';
 
 const UserProfile = () => {
   const navigate = useNavigate()
   const { username } = useParams()
 
   const initiateMessage = async () => {
-    const conversation = await createChat('63d5506d67a2310bda2645ca')
+    const conversation = await createChat(username)
     console.log({ conversation, username })
     // if (conversation?._id) navigate.push(`/inbox/${conversation._id}`)
   }
-  const [userData, setUserData]= useState([
+
+
+  const [loading, setLoading] = useState(true)
+  const [profile, setProfile] = useState({})
+  const [userProfileData, setUserProfileData] = useState([])
+
+  const myProfileApiCall = () => {
+    getUserProfile(username).then(response => {
+      console.log({ response })
+      setProfile(response || [])
+      setUserProfileData([
+        {
+          name: "Name",
+          value: response.name
+        },
+        {
+          name: "Email",
+          value: response.email
+        },
+        {
+          name: "Phone",
+          value: response.phoneNumber
+        },
+        {
+          name: "Address",
+          value: response.address
+        },
+      ])
+      setLoading(false)
+    }).catch(err => {
+      setLoading(false)
+    })
+  }
+
+  useEffect(() => {
+    myProfileApiCall()
+  }, [])
+
+  const [userData, setUserData] = useState([
     'Name : Sakib Hasan',
     'Email : sakib@gmail.com',
     'Phone : sakib@gmail.com',
@@ -44,39 +83,25 @@ const UserProfile = () => {
     },
     {
       title: 'Links',
-      dataIndex: 'link',
+      dataIndex: 'url',
       render: (text) => <a href={text}>{text}</a>
     }
   ];
 
-  const socialData = [
+  const userProfileColumns = [
     {
-      key: '1',
-      name: 'Facebook',
-      link: 'sakibhasancse',
+      title: 'Keys',
+      dataIndex: 'name'
     },
     {
-      key: '2',
-      name: 'Instragram',
-      link: 'sakibhasancse',
-    },
-    {
-      key: '3',
-      name: 'Tweeter',
-      link: 'sakibhasancse',
-    },
-    {
-      key: '4',
-      name: 'Website',
-      link: 'sakibhasancse',
-    },
-  ];
-
+      title: 'value',
+      dataIndex: 'value'
+    }
+  ]
   const count = 3;
-const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
+  const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
 
   const [initLoading, setInitLoading] = useState(true);
-  const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [list, setList] = useState([]);
   useEffect(() => {
@@ -127,104 +152,95 @@ const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender
     ) : null;
 
   return (
-      <div>
-        <Row justify="space-around" align="middle" >
-          <Col span={24} xs={20} xl={20}>
-            <Row >
-              <Col xl={10} xs={24} md={10}  xl={10} align="middle">
-                <Card bordered={false}>
-                  <Avatar
-                    style={{
-                      backgroundColor: color,
-                      verticalAlign: 'middle'
-                    }}
-                    size={{
-                      xs: 90,
-                      sm: 120,
-                      md: 120,
-                      lg: 140,
-                      xl: 120,
-                      xxl: 160,
-                    }}
-                    gap={gap}
-                  >
-                    {user}
-                  </Avatar>
-                  <h3>Sakib Hasan</h3>
-                  <p>Full stuck developer</p>
-                  <Space direction="vertical">
-                    <Space wrap>
-                      <Button type="primary" shape="round" size="large">Follow</Button>
-                      <Button shape="round" size="large" onClick={initiateMessage}>Message</Button>
-                    </Space>
+    <div>
+      <Row justify="space-around" align="middle" >
+        <Col span={24} xs={20} xl={20}>
+          <Row >
+            <Col xl={10} xs={24} md={10} xl={10} align="middle">
+              <Card bordered={false}>
+                <Avatar
+                  style={{
+                    backgroundColor: color,
+                    verticalAlign: 'middle'
+                  }}
+                  size={{
+                    xs: 90,
+                    sm: 120,
+                    md: 120,
+                    lg: 140,
+                    xl: 120,
+                    xxl: 160,
+                  }}
+                  gap={gap}
+                >
+                  {user}
+                </Avatar>
+                <h3>{profile.name}</h3>
+                <p>{profile.designation}</p>
+                <Space direction="vertical">
+                  <Space wrap>
+                    <Button type="primary" shape="round" size="large">Follow</Button>
+                    <Button shape="round" size="large" onClick={initiateMessage}>Message</Button>
                   </Space>
-                </Card>
-                <Card bordered={false}>
-                {/* <List
-                  itemLayout="horizontal"
-                  dataSource={socielInfo}
-                  renderItem={(item, index) => (
-                    <List.Item>
-                      <List.Item.Meta
-                        avatar={<Avatar src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`} />}
-                        title={<a href="https://ant.design">{item.title}</a>}
-                        description="Ant Design, a design language for background applications, is refined by Ant UED Team"
-                      />
-                    </List.Item>
-                  )}
-                /> */}
+                </Space>
+              </Card>
+              <Card bordered={false}>
 
                 <Table
                   pagination={{
                     position: ["none", "none"],
                   }}
-                    columns={columns}
-                    dataSource={socialData}
-                  />
-                </Card>
+                  columns={columns}
+                  dataSource={profile.links || []}
+                />
+              </Card>
 
-                
-              </Col>
-              <Col xl={14} xs={24} md={14} xl={14}>
-                <Card bordered={false}>
-                <List
-                  size="small"
-                  dataSource={userData}
-                  renderItem={(item) => <List.Item>{item}</List.Item>}
+
+            </Col>
+            <Col xl={14} xs={24} md={14} xl={14}>
+              <Card bordered={false}>
+
+                <Table
+                  pagination={{
+                    position: ["none", "none"],
+                  }}
+                  columns={userProfileColumns}
+                  dataSource={userProfileData}
+                />
+              </Card>
+              {profile.description && (<Card >
+                <p style={{ minHeight: "223px", maxHeight: "223px" }}>
+                  {profile.description}
+                </p> </Card>)
+              }
+
+            </Col>
+          </Row>
+          <h3>Posts</h3>
+          <List
+            className="demo-loadmore-list"
+            loading={initLoading}
+            itemLayout="horizontal"
+            loadMore={loadMore}
+            dataSource={list}
+            renderItem={(item) => (
+              <List.Item
+                actions={[<a key="list-loadmore-edit">edit</a>, <a key="list-loadmore-more">more</a>]}
+              >
+                <Skeleton avatar title={false} loading={item.loading} active>
+                  <List.Item.Meta
+                    avatar={<Avatar src={item.picture.large} />}
+                    title={<a href="https://ant.design">{item.name?.last}</a>}
+                    description="Ant Design, a design language for background applications, is refined by Ant UED Team"
                   />
-                </Card>
-                <Card >
-              <p> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Atque ullam consequatur voluptates tempora, id sed iste, nam rem officiis neque laboriosam laudantium dolorem nostrum sit laborum cumque quia consequuntur nihil.
-                 Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ab beatae, fugiat voluptate, odit facilis modi quidem recusandae alias laboriosam qui eos, tempore sequi eligendi quia! Minus quod ratione provident ipsum quis dolorum, asperiores quidem fugiat quos facilis iure beatae, cum hic, itaque repellat possimus laboriosam velit vitae. Beatae eligendi at qui atque cumque, reprehenderit iure inventore, numquam modi suscipit minus.
-                  
-              </p> </Card>
-              </Col>
-            </Row>
-            <h3>Posts</h3>
-            <List
-              className="demo-loadmore-list"
-              loading={initLoading}
-              itemLayout="horizontal"
-              loadMore={loadMore}
-              dataSource={list}
-              renderItem={(item) => (
-                <List.Item
-                  actions={[<a key="list-loadmore-edit">edit</a>, <a key="list-loadmore-more">more</a>]}
-                >
-                  <Skeleton avatar title={false} loading={item.loading} active>
-                    <List.Item.Meta
-                      avatar={<Avatar src={item.picture.large} />}
-                      title={<a href="https://ant.design">{item.name?.last}</a>}
-                      description="Ant Design, a design language for background applications, is refined by Ant UED Team"
-                    />
-                    <div>content</div>
-                  </Skeleton>
-                </List.Item>
-              )}/>
-              <br/>
-          </Col>
-        </Row>
-      </div>
+                  <div>content</div>
+                </Skeleton>
+              </List.Item>
+            )} />
+          <br />
+        </Col>
+      </Row>
+    </div >
   )
 }
 export default UserProfile

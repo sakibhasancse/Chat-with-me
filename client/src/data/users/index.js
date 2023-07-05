@@ -1,18 +1,15 @@
 import { apiRequest } from "../../services"
 
 export const getUserProfile = async (userName) => {
-  const response = await apiRequest.get("/user-profile", {
-    userName
-  })
+  const response = await apiRequest.get(`/auth/user-profile/${userName}`)
   console.log({ response })
-  return response?.data || {}
+  return response || {}
 }
 
 
 export const updateUserProfile = async (data) => {
   const response = await apiRequest.put("/auth/my-profile", data)
-  console.log({ response })
-  return response?.data || {}
+  return response || {}
 }
 
 export const getMyProfile = async () => {
