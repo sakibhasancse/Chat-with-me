@@ -84,12 +84,13 @@ export const getProfile = async (req, res, next) => {
   try {
     const { user = {} } = req
     const { userId } = user
+    console.log("workin")
     const userData = await userHelper.getAUser({ _id: userId })
     if (!userData) {
       throw new CustomError(404, 'User not found')
     }
     delete userData.password
-    return userData
+    res.status(200).json(userData)
   } catch (error) {
     return next(error)
   }
@@ -104,13 +105,15 @@ export const updateProfile = async (req, res, next) => {
       throw new CustomError(404, 'User not found')
     }
     const updatedData = userHelper.prepareProfileData(body)
-
+    console.log({ updatedData })
     if (!_.size(updatedData)) {
       throw new CustomError(400, 'Unable to update')
     }
-    const updatedUser = await UserCollection.findOneAndUpdate({ _id: userData._id }, updatedData)
+    console.log(userData)
+    const updatedUser = await UserCollection.findOneAndUpdate({ _id: userId }, updatedData)
+    console.log(updatedUser)
     delete updatedUser.password
-    return updatedUser
+    res.status(200).json(updatedUser)
   } catch (error) {
     return next(error)
   }
@@ -128,7 +131,7 @@ export const getUserProfile = async (req, res, next) => {
       throw new CustomError(404, 'User not found')
     }
     delete userData.password
-    return userData
+    res.status(200).json(userData)
   } catch (error) {
     return next(error)
   }

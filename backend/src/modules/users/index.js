@@ -8,7 +8,7 @@ router.post('/register', registerUser)
 router.post('/login', loginUser)
 router.post('/refresh-token', checkRefreshToken, getRefreshToken)
 router.get('/my-profile', checkAuth, getProfile)
-router.post('/my-profile', checkAuth, updateProfile)
+router.put('/my-profile', checkAuth, updateProfile)
 router.get('/user-profile/:userId', getUserProfile)
 
 export default router

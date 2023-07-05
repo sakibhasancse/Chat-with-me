@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import _ from 'lodash'
 import { CustomError } from '../../app/error.js'
 import { appHelper } from '../helpers.js'
 import { UserCollection } from '../models.js'
@@ -41,12 +42,12 @@ export const getAuthTokens = async (user = {}) => {
 }
 
 export const prepareProfileData = (params) => {
-  const updatedData = {}
+  let updatedData = {}
   if (params.hasOwnProperty('name')) {
     updatedData.name = params.name
   }
-  if (params.hasOwnProperty('phone')) {
-    updatedData.phone = params.phone
+  if (params.hasOwnProperty('phoneNumber')) {
+    updatedData.phoneNumber = params.phoneNumber
   }
   if (params.hasOwnProperty('description')) {
     updatedData.description = params.description
@@ -66,17 +67,20 @@ export const prepareProfileData = (params) => {
 
   //Links
 
+  const links = []
   if (params.hasOwnProperty('website')) {
-    updatedData['links.website'] = params.website
+    links.push({ name: "website", url: params.website })
   }
   if (params.hasOwnProperty('tweeter')) {
-    updatedData['links.tweeter'] = params.tweeter
+    links.push({ name: "tweeter", url: params.tweeter })
   }
   if (params.hasOwnProperty('instragram')) {
-    updatedData['links.instragram'] = params.instragram
+    links.push({ name: "instragram", url: params.website })
   }
   if (params.hasOwnProperty('facebook')) {
-    updatedData['links.facebook'] = params.facebook
+    links.push({ name: "facebook", url: params.facebook })
   }
+  if (_.size(updatedData)) updatedData = { $set: updatedData }
+  if (_.size(links)) updatedData.$addToSet = { links: { $each: links } }
   return updatedData
 }

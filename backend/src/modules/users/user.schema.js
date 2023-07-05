@@ -4,8 +4,14 @@ import { CreatedBySchemas, Id } from '../common/common.model.js'
 const { Schema } = mongoose
 
 const LinksSchema = new Schema({
-    name: String,
-    url: String
+    name: {
+        type: String
+    },
+    url: {
+        type: String
+    }
+}, {
+    _id: false
 })
 
 const userSchema = new Schema(
@@ -31,6 +37,12 @@ const userSchema = new Schema(
             phoneNumber: {
                 type: Number,
                 require: true
+            },
+            description: {
+                type: String
+            },
+            designation: {
+                type: String
             },
             links: [LinksSchema]
         }
