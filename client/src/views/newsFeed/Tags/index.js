@@ -1,44 +1,18 @@
-import {
-  CheckCircleOutlined,
-  ClockCircleOutlined,
-  CloseCircleOutlined,
-  ExclamationCircleOutlined,
-  MinusCircleOutlined,
-  SyncOutlined,
-} from '@ant-design/icons';
 import { Divider, Space, Tag } from 'antd';
 
-const Tags = () => (
-  <>
-    <Divider orientation="left">Tags</Divider>
-    <Space size={[0, 8]} wrap>
-      <Tag color="success">success</Tag>
-      <Tag color="processing">processing</Tag>
-      <Tag color="error">error</Tag>
-      <Tag color="warning">warning</Tag>
-      <Tag color="default">default</Tag>
-    </Space>
-    <Divider orientation="left">Tags</Divider>
-    <Space size={[0, 8]} wrap>
-      <Tag icon={<CheckCircleOutlined />} color="success">
-        success
-      </Tag>
-      <Tag icon={<SyncOutlined spin />} color="processing">
-        processing
-      </Tag>
-      <Tag icon={<CloseCircleOutlined />} color="error">
-        error
-      </Tag>
-      <Tag icon={<ExclamationCircleOutlined />} color="warning">
-        warning
-      </Tag>
-      <Tag icon={<ClockCircleOutlined />} color="default">
-        waiting
-      </Tag>
-      <Tag icon={<MinusCircleOutlined />} color="default">
-        stop
-      </Tag>
-    </Space>
-  </>
-);
+const Tags = ({ tags, loading }) => {
+
+  return (
+    <>
+      <Divider orientation="left">Tags</Divider>
+      <Space size={[0, 8]} wrap>
+        {
+          tags.map(tag => (
+            <Tag color="success">{tag.name}</Tag>
+          ))
+        }
+      </Space>
+    </>
+  )
+}
 export default Tags

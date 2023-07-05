@@ -15,9 +15,9 @@ export const Private = async (req, res, next) => {
     const token = authorization.replace('Bearer ', '')
 
     if (!token) throw new CustomError(401, 'Unauthenticated request')
-    console.log({ token })
+    // console.log({ token })
     const decoded = await verifyJwtToken(token, process.env.ACCESS_TOKEN_SECRET)
-    console.log({ decoded })
+    // console.log({ decoded })
     if (!decoded) {
       throw new CustomError(404, 'Unauthenticated user')
     }
@@ -42,10 +42,8 @@ export const checkAuth = async (req, res, next) => {
       return next()
 
     const token = authorization.replace('Bearer ', '')
-    console.log('s', { token })
     if (token) {
       const decoded = await verifyJwtToken(token, process.env.ACCESS_TOKEN_SECRET)
-      console.log({ token, decoded })
       const query = {
         _id: decoded.userId
       }

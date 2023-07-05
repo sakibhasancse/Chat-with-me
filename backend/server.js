@@ -39,7 +39,7 @@ io.on('connection', (socket) => {
 
   console.log('rooms', socket.rooms)
   socket.use(([event, ...args], next) => {
-    console.log({ event, args })
+    // console.log({ event, args })
     // if (isUnauthorized(event)) {
     //   return next(new Error("unauthorized event"));
     // }
@@ -55,36 +55,36 @@ io.on('connection', (socket) => {
   });
   socket.conn.once("upgrade", () => {
     // called when the transport is upgraded (i.e. from HTTP long-polling to WebSocket)
-    console.log("upgraded transport", socket.conn.transport.name); // prints "websocket"
+    // console.log("upgraded transport", socket.conn.transport.name); // prints "websocket"
   });
 
   socket.conn.on("packet", ({ type, data }) => {
-    console.log("upgraded packet", { type, data }); // prints "websocket"
+    // console.log("upgraded packet", { type, data }); // prints "websocket"
     // called for each packet received
   });
 
   socket.conn.on("packetCreate", ({ type, data }) => {
     // called for each packet sent
-    console.log("upgraded packetCreate", { type, data }); // prints "websocket"
+    // console.log("upgraded packetCreate", { type, data }); // prints "websocket"
   });
 
   socket.conn.on("drain", () => {
-    console.log("upgraded packdrainetCreate"); // prints "websocket"
+    // console.log("upgraded packdrainetCreate"); // prints "websocket"
     // called when the write buffer is drained
   });
 
   socket.conn.on("close", (reason) => {
-    console.log("upgraded reason", reason); // prints "websocket"
+    // console.log("upgraded reason", reason); // prints "websocket"
     // called when the underlying connection is closed
   });
 
   io.use((socket, next) => {
-    console.log('sss', socket.request)
+    // console.log('sss', socket.request)
     next();
 
   });
   socket.on("disconnecting", (reason) => {
-    console.log({ reason })
+    // console.log({ reason })
     for (const room of socket.rooms) {
       if (room !== socket.id) {
         socket.to(room).emit("user has left", socket.id);
@@ -95,12 +95,12 @@ io.on('connection', (socket) => {
   socket.emit("me", socket.id)
 
   socket.on('user-join', ({ userId }) => {
-    console.log(`A user joined userId-${userId}`);
+    // console.log(`A user joined userId-${userId}`);
     socket.join(`userId-${userId}`);
   });
 
   socket.on('user-send-message', ({ name, toUserId, chatId, newMessage, fromUserId }) => {
-    console.log('message send')
+    // console.log('message send')
     socket
       .to(`userId-${toUserId}`)
       .emit('receive-message', {
@@ -112,12 +112,12 @@ io.on('connection', (socket) => {
   });
 
   socket.on('msgUser', ({ name, to, msg, sender }) => {
-    console.log('ss', { name, to, msg, sender })
+    // console.log('ss', { name, to, msg, sender })
     io.to(to).emit("msgRcv", { name, msg, sender });
   })
 
   socket.on("callUser", ({ toUserId, signalData, fromUserId, name, chatId }) => {
-    console.log({ toUserId, fromUserId, name })
+    // console.log({ toUserId, fromUserId, name })
     io.to(`userId-${toUserId}`).emit("callUser", {
       signalData: signalData,
       fromUserId,

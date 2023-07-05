@@ -15,6 +15,7 @@ import { createChat } from '../../data/chat'
 import Card from 'antd/es/card/Card';
 import Link from 'antd/es/typography/Link';
 import { getUserProfile } from '../../data/users';
+import { getAllPosts, getUserPosts } from '../../data/posts';
 
 const UserProfile = () => {
   const navigate = useNavigate()
@@ -63,14 +64,6 @@ const UserProfile = () => {
     myProfileApiCall()
   }, [])
 
-  const [userData, setUserData] = useState([
-    'Name : Sakib Hasan',
-    'Email : sakib@gmail.com',
-    'Phone : sakib@gmail.com',
-    'Address : sakib@gmail.com',
-    'Mobile : sakib@gmail.com'
-  ])
-
 
   const [user, setUser] = useState(UserList[0]);
   const [color, setColor] = useState(ColorList[0]);
@@ -98,36 +91,41 @@ const UserProfile = () => {
       dataIndex: 'value'
     }
   ]
-  const count = 3;
-  const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
-
+  const limit = 3;
   const [initLoading, setInitLoading] = useState(true);
   const [data, setData] = useState([]);
   const [list, setList] = useState([]);
+  const [skip, setSkip] = useState(0)
+  const [paging, setPaging] = useState({ currentPage: 1, totalDocuments: 4, totalPages: 2 })
+
   useEffect(() => {
-    fetch(fakeDataUrl)
-      .then((res) => res.json())
+    getUserPosts(`/${username}?skip=${skip}&limit=${limit}`)
       .then((res) => {
+        console.log(res)
         setInitLoading(false);
-        setData(res.results);
-        setList(res.results);
+        setData(res.data);
+        setList(res.data);
+        setPaging(res.paging)
       });
   }, []);
+
   const onLoadMore = () => {
     setLoading(true);
+    setSkip((oldSkip) => oldSkip + limit)
     setList(
       data.concat(
-        [...new Array(count)].map(() => ({
+        [...new Array(limit)].map(() => ({
           loading: true,
           name: {},
           picture: {},
         })),
       ),
     );
-    fetch(fakeDataUrl)
-      .then((res) => res.json())
+
+    getUserPosts(`/${username}?skip=${skip + limit}&limit=${limit}`)
       .then((res) => {
-        const newData = data.concat(res.results);
+        console.log({ res })
+        const newData = data.concat(res.data);
         setData(newData);
         setList(newData);
         setLoading(false);
@@ -137,8 +135,10 @@ const UserProfile = () => {
         window.dispatchEvent(new Event('resize'));
       });
   };
+
+
   const loadMore =
-    !initLoading && !loading ? (
+    !initLoading && !loading && data.length !== paging?.totalDocuments ? (
       <div
         style={{
           textAlign: 'center',
@@ -210,7 +210,7 @@ const UserProfile = () => {
               </Card>
               {profile.description && (<Card >
                 <p style={{ minHeight: "223px", maxHeight: "223px" }}>
-                  {profile.description}
+                  {profile.description.length > 500 ? `${profile.description.substring(0, 918)} ...` : profile.description}
                 </p> </Card>)
               }
 
@@ -225,15 +225,15 @@ const UserProfile = () => {
             dataSource={list}
             renderItem={(item) => (
               <List.Item
-                actions={[<a key="list-loadmore-edit">edit</a>, <a key="list-loadmore-more">more</a>]}
+                actions={[<a key="list-loadmore-more">view</a>]}
               >
                 <Skeleton avatar title={false} loading={item.loading} active>
                   <List.Item.Meta
-                    avatar={<Avatar src={item.picture.large} />}
-                    title={<a href="https://ant.design">{item.name?.last}</a>}
-                    description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                    avatar={<Avatar src={item.avatar || 'https://www.w3schools.com/w3images/avatar2.png'} />}
+                    title={<a href="https://ant.design">{item.title}</a>}
+                    description={item.description}
                   />
-                  <div>content</div>
+                  {/* <div>{item.description}</div> */}
                 </Skeleton>
               </List.Item>
             )} />

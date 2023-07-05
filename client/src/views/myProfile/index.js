@@ -2,11 +2,12 @@ import { Avatar, Button, Row, Col, Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { pick, isEqual } from 'lodash'
 
-import Form from 'antd/es/form/Form';
+import Form, { List } from 'antd/es/form/Form';
 import Input from 'antd/es/input/Input';
 import React, { useEffect, useState } from 'react';
 import TextArea from 'antd/es/input/TextArea';
 import { getMyProfile, updateUserProfile } from '../../data/users';
+import { getUserPosts } from '../../data/posts';
 
 const UserList = ['U', 'Lucy', 'Tom', 'Edward'];
 const ColorList = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae'];
@@ -51,6 +52,69 @@ const MyProfile = () => {
   };
 
   const buttonDisabled = isEqual(profile, oldProfileData)
+
+
+  const limit = 3;
+  const [initLoading, setInitLoading] = useState(true);
+  const [data, setData] = useState([]);
+  const [list, setList] = useState([]);
+  const [skip, setSkip] = useState(0)
+  const [paging, setPaging] = useState({ currentPage: 1, totalDocuments: 4, totalPages: 2 })
+
+  useEffect(() => {
+    getUserPosts(`?skip=${skip}&limit=${limit}`)
+      .then((res) => {
+        console.log({ res })
+        setInitLoading(false);
+        setData(res.data);
+        setList(res.data);
+        setPaging(res.paging)
+      }).catch(err => {
+        console.log({ err })
+      })
+  }, []);
+
+  const onLoadMore = () => {
+    setLoading(true);
+    setSkip((oldSkip) => oldSkip + limit)
+    setList(
+      data.concat(
+        [...new Array(limit)].map(() => ({
+          loading: true,
+          name: {},
+          picture: {},
+        })),
+      ),
+    );
+
+    getUserPosts(`?skip=${skip + limit}&limit=${limit}`)
+      .then((res) => {
+        console.log({ res })
+        const newData = data.concat(res.data);
+        setData(newData);
+        setList(newData);
+        setLoading(false);
+        // Resetting window's offsetTop so as to display react-virtualized demo underfloor.
+        // In real scene, you can using public method of react-virtualized:
+        // https://stackoverflow.com/questions/46700726/how-to-use-public-method-updateposition-of-react-virtualized
+        window.dispatchEvent(new Event('resize'));
+      });
+  };
+
+
+  const loadMore =
+    !initLoading && !loading && data?.length !== paging?.totalDocuments ? (
+      <div
+        style={{
+          textAlign: 'center',
+          marginTop: 12,
+          height: 32,
+          lineHeight: '32px',
+        }}
+      >
+        <Button onClick={onLoadMore}>loading more</Button>
+      </div>
+    ) : null;
 
   return (
     <div>
@@ -232,6 +296,33 @@ const MyProfile = () => {
           </Col>
         </Row>
       )}
+
+      <Row justify="space-around" align="middle" >
+
+        <Col span={24} xs={20} xl={14}>
+          <h3>Posts</h3>
+          <List
+            className="demo-loadmore-list"
+            loading={initLoading}
+            itemLayout="horizontal"
+            loadMore={loadMore}
+            dataSource={list}
+            renderItem={(item) => (
+              <List.Item
+                actions={[<a key="list-loadmore-edit">edit</a>, <a key="list-loadmore-more">view</a>]}
+              >
+                <Skeleton avatar title={false} loading={item.loading} active>
+                  <List.Item.Meta
+                    avatar={<Avatar src={item.avatar || 'https://www.w3schools.com/w3images/avatar2.png'} />}
+                    title={<a href="https://ant.design">{item.title}</a>}
+                    description={item.description}
+                  />
+                  <div>{item.description}</div>
+                </Skeleton>
+              </List.Item>
+            )} />
+        </Col>
+      </Row>
     </div>
   )
 }
