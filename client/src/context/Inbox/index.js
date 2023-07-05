@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 import InboxContext from "./inboxContext"
 import { AuthContext } from '../AuthContext/index'
 import socket from "../../socket";
-import { createChat } from "../../data/chat";
+import { createChat, sendMessage } from "../../data/chat";
 
 
 const InboxProvider = ({ children }) => {
@@ -39,7 +39,7 @@ const InboxProvider = ({ children }) => {
   }, [])
 
 
-  const sendNewMessage = (value) => {
+  const sendNewMessage = async (value) => {
     const otherUser = chatList.find(chatItem => chatItem._id === currentChatId)
     console.log({ value })
     setMessages(oldMessage => [...oldMessage, value])
@@ -47,6 +47,7 @@ const InboxProvider = ({ children }) => {
       name: user.name, ss: otherUser.participantOtherUsers[1]?._id, toUserId: otherUser.participantOtherUsers[0]?._id, chatId: currentChatId, newMessage: value, fromUserId: user.userId
     })
     socket.emit("user-send-message", { name: user.name, toUserId: otherUser.participantOtherUsers[0]?._id, chatId: currentChatId, newMessage: value, fromUserId: user.userId });
+    await sendMessage(currentChatId, value?.content)
   }
 
   const handleMessage = (userId) => {
