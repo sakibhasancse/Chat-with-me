@@ -9,6 +9,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import InboxContext from '../../../context/Inbox/inboxContext';
 import { getChatList } from '../../../data/chat';
 import ChatRightButton from './ChatRightButton';
+import Input from 'antd/es/input/Input';
 
 const Chats = () => {
   const { setMessages, setOtherUsers } = useContext(InboxContext)
@@ -51,46 +52,52 @@ const Chats = () => {
   }, []);
 
   return (
-    <div
-      id="scrollableDiv"
-      style={{
-        height: '800px',
-        overflow: 'auto',
-        // padding: '0 16px',
-        border: '1px solid rgba(140, 140, 140, 0.35)',
-      }}
-    >
-      <InfiniteScroll
-        dataLength={totalDocuments}
-        next={loadMoreData}
-        hasMore={chatList.length < totalDocuments}
-        loader={
-          <Skeleton
-            avatar
-            paragraph={{ rows: 1 }}
-            active
-          />
-        }
-        scrollableTarget="scrollableDiv"
+    <>
+      <h3>Chats</h3>
+      <Input placeholder="Search message" />
+      <br />   <br />
+      <div
+        id="scrollableDiv"
+        style={{
+          height: "auto",
+          minHeight: "700px",
+          overflow: 'auto',
+          // padding: '0 16px',
+          border: '1px solid rgba(140, 140, 140, 0.35)',
+        }}
       >
-        <List
-          dataSource={chatList}
-          renderItem={(item) => (
-            <List.Item key={item._id}>
-              <List.Item.Meta
-                avatar={<Avatar src={item.participantOtherUsers[0]?.profileUrl} />}
-                title={<div onClick={() => handleMessage(item)}>{item.participantOtherUsers[0]?.name}</div>}
-                description={<div>
-                  <p>{item.lastMessage}</p>
-                  <h4>{moment(item.lastMessageAt || item.createdAt).fromNow()}</h4>
-                </div>}
-              />
-              <ChatRightButton />
-            </List.Item>
-          )}
-        />
-      </InfiniteScroll>
-    </div>
+        <InfiniteScroll
+          dataLength={totalDocuments}
+          next={loadMoreData}
+          hasMore={chatList.length < totalDocuments}
+          loader={
+            <Skeleton
+              avatar
+              paragraph={{ rows: 1 }}
+              active
+            />
+          }
+          scrollableTarget="scrollableDiv"
+        >
+          <List
+            dataSource={chatList}
+            renderItem={(item) => (
+              <List.Item key={item._id}>
+                <List.Item.Meta
+                  avatar={<Avatar src={item.participantOtherUsers[0]?.profileUrl} />}
+                  title={<div onClick={() => handleMessage(item)}>{item.participantOtherUsers[0]?.name}</div>}
+                  description={<div>
+                    <p>{item.lastMessage}</p>
+                    <h4>{moment(item.lastMessageAt || item.createdAt).fromNow()}</h4>
+                  </div>}
+                />
+                <ChatRightButton />
+              </List.Item>
+            )}
+          />
+        </InfiniteScroll>
+      </div>
+    </>
   )
 }
 
