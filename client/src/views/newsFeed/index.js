@@ -8,11 +8,24 @@ import { getAllPosts } from '../../data/posts'
 import CreatePostModal from '../posts/CreatePostModal'
 import RightBox from './RightBox.js'
 import Tags from './Tags'
+import { getTags } from '../../data/tags'
 
 const Feed = () => {
   const [open, setOpen] = useState(false);
+  const [reFetch, setRefetch] = useState(true);
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
+  const [tags, setTags] = useState([])
+
+  const tagsApiCall = () => {
+    getTags().then(response => {
+      console.log({ response })
+      setTags(response || [])
+      setLoading(false)
+    }).catch(err => {
+      setLoading(false)
+    })
+  }
 
   const postsApiCall = () => {
     getAllPosts().then(response => {
@@ -26,15 +39,19 @@ const Feed = () => {
   }
 
   useEffect(() => {
-    postsApiCall()
-  }, [])
+    if (reFetch) {
+      postsApiCall()
+      tagsApiCall()
+      setRefetch(false)
+    }
+  }, [reFetch])
 
   return (
     <div className="container">
-      <CreatePostModal open={open} setOpen={setOpen} setPosts={setPosts} />
+      <CreatePostModal open={open} setOpen={setOpen} setRefetch={setRefetch} />
       <Row justify="space-around">
         <Col xs={24} xl={4}>
-          <Tags />
+          <Tags loading={loading} tags={tags} />
         </Col>
         <Col xs={24} xl={15}>
           <ArticleCard loading={loading} posts={posts} />

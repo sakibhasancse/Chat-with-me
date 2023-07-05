@@ -1,11 +1,12 @@
 import { LikeOutlined, MessageOutlined, StarOutlined } from "@ant-design/icons";
-import { Avatar, List, Space } from "antd";
+import { Avatar, List, Space, Tag } from "antd";
 import Link from "antd/es/typography/Link";
 import React, { useContext } from "react";
 import { useNavigate } from "react-router";
 import { Button, Popover } from "antd";
 import InboxContext from "../../context/Inbox/inboxContext";
 import { getUser } from "../../context/AuthContext";
+import moment from 'moment'
 
 const IconText = ({ icon, text }) => (
   <Space>
@@ -27,7 +28,7 @@ const ArticleCard = ({ posts = [], loading = false }) => {
         onChange: (page) => {
           console.log(page);
         },
-        pageSize: 3,
+        pageSize: 5,
       }}
       dataSource={posts}
       footer={<div></div>}
@@ -76,7 +77,6 @@ const ArticleCard = ({ posts = [], loading = false }) => {
                     />
                     {item.creator?.name}
                     <br />
-                    <br />
                     <Button
                       size="small"
                       style={{
@@ -120,7 +120,8 @@ const ArticleCard = ({ posts = [], loading = false }) => {
                   {item.creator?.name}
                 </Link>
                 <br />
-                <p style={{ cursor: "pointer" }}>{item.title}</p>
+                <small style={{ fontWeight: 300 }}>{moment(item.createdAt).fromNow()}</small>
+                <p style={{ cursor: "pointer" }} >{item.title.length > 107 ? `${item.title.substring(0, 107)}...` : item.title}</p>
               </div>
             }
             description={
@@ -128,11 +129,21 @@ const ArticleCard = ({ posts = [], loading = false }) => {
                 style={{ cursor: "pointer" }}
                 onClick={() => navigate(`/posts/${item.slug}`)}
               >
-                {item.description}
+                {item.description.length > 200 ? `${item.description.substring(0, 200)}...` : item.description}
+                <Space size={[0, 8]} wrap>
+                  {item.tags && item.tags.map((item, key) => (
+                    <Tag color="success">{item}</Tag>
+                  ))}
+                </Space>
               </p>
             }
           />
-          {item.content}
+          {/* {item.content} */}
+          {/* <Space size={[0, 8]} wrap>
+            {item.tags && item.tags.map((item, key) => (
+              <Tag color="success">{item}</Tag>
+            ))}
+          </Space> */}
         </List.Item>
       )}
     />

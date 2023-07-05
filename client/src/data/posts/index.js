@@ -1,8 +1,11 @@
 import { apiRequest } from "../../services"
 
-export const getUserPosts = async () => {
-  const response = await apiRequest.get("/posts")
-  return response?.data || []
+export const getUserPosts = async (queryPath) => {
+  let path = `/posts/user`
+  if (queryPath) path = path + queryPath
+  console.log(path)
+  const response = await apiRequest.get(path)
+  return response || []
 }
 
 export const getAllPosts = async (queryPath) => {

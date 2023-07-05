@@ -7,7 +7,7 @@ import { getUser } from '../../context/AuthContext';
 import { createPosts } from '../../data/posts';
 import TagsInputBox from './TagsInput';
 
-const CreatePostModal = ({ open, setOpen, setPosts }) => {
+const CreatePostModal = ({ open, setOpen, setRefetch }) => {
   const [loading, setLoading] = useState(false);
 
   const [values, setValues] = useState({
@@ -35,8 +35,9 @@ const CreatePostModal = ({ open, setOpen, setPosts }) => {
     const response = await createPosts(values)
     console.log({ response })
     if (response?._id) {
-      response.creator = getUser()
-      setPosts(oldPosts => [response, ...oldPosts])
+      // response.creator = getUser()
+      // setPosts(oldPosts => [response, ...oldPosts])
+      setRefetch(true)
     } else {
       toast.error(response?.message)
     }

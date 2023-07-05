@@ -12,7 +12,7 @@ export const getPost = async (query) => {
 }
 
 
-export const postsSearchQuery = ({ keyword, category }) => {
+export const postsSearchQuery = ({ keyword, category, userId }) => {
   const query = {
     title: {
       $regex: keyword,
@@ -20,6 +20,7 @@ export const postsSearchQuery = ({ keyword, category }) => {
     }
   }
   if (category) query.category = category
+  if (userId) query.createdBy = userId
   return query
 }
 

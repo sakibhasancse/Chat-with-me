@@ -80,3 +80,59 @@ export const getRefreshToken = async (req, res, next) => {
   }
 }
 
+export const getProfile = async (req, res, next) => {
+  try {
+    const { user = {} } = req
+    const { userId } = user
+    console.log("workin")
+    const userData = await userHelper.getAUser({ _id: userId })
+    if (!userData) {
+      throw new CustomError(404, 'User not found')
+    }
+    delete userData.password
+    res.status(200).json(userData)
+  } catch (error) {
+    return next(error)
+  }
+}
+
+export const updateProfile = async (req, res, next) => {
+  try {
+    const { user = {}, body = {} } = req
+    const { userId } = user
+    const userData = await userHelper.getAUser({ _id: userId })
+    if (!userData) {
+      throw new CustomError(404, 'User not found')
+    }
+    const updatedData = userHelper.prepareProfileData(body)
+    console.log({ updatedData })
+    if (!_.size(updatedData)) {
+      throw new CustomError(400, 'Unable to update')
+    }
+    console.log(userData)
+    const updatedUser = await UserCollection.findOneAndUpdate({ _id: userId }, updatedData)
+    console.log(updatedUser)
+    delete updatedUser.password
+    res.status(200).json(updatedUser)
+  } catch (error) {
+    return next(error)
+  }
+}
+
+export const getUserProfile = async (req, res, next) => {
+  try {
+    const userId = req.params?.userId
+    if (!userId) {
+      throw new CustomError(404, 'UserId required')
+    }
+
+    const userData = await userHelper.getAUser({ _id: userId })
+    if (!userData) {
+      throw new CustomError(404, 'User not found')
+    }
+    delete userData.password
+    res.status(200).json(userData)
+  } catch (error) {
+    return next(error)
+  }
+}

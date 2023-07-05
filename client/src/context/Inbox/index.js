@@ -27,10 +27,17 @@ const InboxProvider = ({ children }) => {
       }
     });
 
-    socket.on("receive-message", (data) => {
+    socket.on("receive-message", (data,) => {
+      console.log('data', data)
       setMessages(oldMessage => [...oldMessage, data.newMessage])
     })
+
+    socket.on("error", (data) => {
+      console.log('data', data)
+
+    })
   }, [])
+
 
   const sendNewMessage = (value) => {
     const otherUser = chatList.find(chatItem => chatItem._id === currentChatId)
