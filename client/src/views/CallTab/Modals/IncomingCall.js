@@ -10,7 +10,7 @@ import InboxContext from "../../../context/Inbox/inboxContext";
 import "./Options.module.css";
 
 const IncomingCall = () => {
-  const { call = {}, answerCall, cancelCall } = useContext(CallContext);
+  const { call = {}, answerCall, handlerDeclineCall } = useContext(CallContext);
   const { currentChatId = '' } = useContext(InboxContext);
   const [showCallingModal, setShowCallingModal] = useState(false)
 
@@ -23,8 +23,8 @@ const IncomingCall = () => {
   }
 
   const handleCancel = () => {
+    handlerDeclineCall();
     setShowCallingModal(false)
-    cancelCall();
   }
 
   const acceptUserCall = () => {
@@ -37,7 +37,8 @@ const IncomingCall = () => {
       setShowCallingModal(true);
       // setOtherUser(call.from);
     } else setShowCallingModal(false);
-  }, [call.isReceivingCall])
+    console.log('calling modal')
+  }, [call])
 
   useEffect(() => {
     if (showCallingModal) {
@@ -51,7 +52,7 @@ const IncomingCall = () => {
       <Modal
         title="Incoming Call"
         visible={showCallingModal}
-        onOk={() => showModal(false)}
+        // onOk={() => showModal(false)}
         onCancel={handleCancel}
         footer={null}
       >
@@ -85,6 +86,7 @@ const IncomingCall = () => {
             className="decline"
             icon={<PhoneOutlined />}
             onClick={() => {
+              handleCancel()
               setShowCallingModal(false);
               Audio?.current?.pause();
             }}

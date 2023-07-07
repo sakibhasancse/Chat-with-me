@@ -21,15 +21,16 @@ import ScreenShare from '../../assets/images/share_screen.svg'
 import VideoIcon from "../../assets/images/video.svg";
 import VideoOff from "../../assets/images/video-off.svg";
 import InboxContext from "../../context/Inbox/inboxContext";
+import EndCallTab from "./EndCall";
 
 const CallTab = () => {
-  const { stream, leaveCall, call, myVdoStatus, myMicStatus, userVideo, setMyVdoStatus, myVideo, callUser, answerCall } = useContext(CallContext);
+  const { stream, handlerCancelCall, calling, setCalling, call, myVdoStatus, myMicStatus, userVideo, setMyVdoStatus, myVideo, callUser, answerCall, endCall } = useContext(CallContext);
   const { user } = useContext(AuthContext)
   const { setMessages, setCurrentChatId, currentChatId, setChatList } = useContext(InboxContext)
   const [message, setMessage] = useState('')
   const [isWrongUrl, setIsWrongUrl] = useState(false)
   const [chat, setChat] = useState({})
-  const [calling, setCalling] = useState(false)
+
   const [canceled, setCancelled] = useState(false)
   const [callAcceptedTab, setCallAcceptedTab] = useState(false)
 
@@ -50,9 +51,10 @@ const CallTab = () => {
   }
 
   const handleCancelCall = () => {
-    leaveCall()
+    console.log("cancel calling ...")
     setCalling(false)
     setCancelled(true)
+    handlerCancelCall()
   }
 
   const handleMessage = (value) => {
@@ -87,6 +89,7 @@ const CallTab = () => {
       ) {
         setIsWrongUrl(true)
       } else {
+        setIsWrongUrl(false)
         const { ig_thread_id, callAccepted } = currentPath
         getChatList(`?chatId=${ig_thread_id}`)
           .then(({ chatList }) => {
@@ -115,37 +118,41 @@ const CallTab = () => {
 
   if (isWrongUrl) {
     return (
-      <div style={{ padding: '20px', paddingTop: '40px' }}> Sorry, this page isn't available.
+      <div style={{ padding: '20px', paddingTop: '40px', minHeight: "300px" }}> Sorry, this page isn't available.
         <br />
       The link you followed may be broken, or the page may have been removed.Go back to home page
       </div>
     )
   }
 
+  const renderPage = () => {
+    if (endCall) return <EndCallTab user={chat?.participantOtherUsers && chat?.participantOtherUsers[0] || {}} />
+    else if (canceled) return (<CancelCallTab user={chat?.participantOtherUsers && chat?.participantOtherUsers[0] || {}} />)
+    else return (
+      <>
+        <Row justify="space-around" align="middle">
+          <Col xs={12} xl={12}>
+            <VideoBox />
+          </Col>
+          <Col xs={12} xl={12}>
+            <UserListBox
+              userList={chat?.participantOtherUsers || {}}
+              calling={calling}
+              callUser={handleCallUser}
+              handleCancelCall={handleCancelCall}
+              isCallAcceptedTab={callAcceptedTab}
+            />
+          </Col>
+        </Row >
+      </>
+    )
+  }
 
   return (
     <section className="container">
-      {canceled ? (
-        <CancelCallTab user={chat?.participantOtherUsers[0]} />
-      ) : (
-        <>
-          <Row justify="space-around" align="middle">
-            <Col xs={12} xl={12}>
-              <VideoBox />
-            </Col>
-            <Col xs={12} xl={12}>
-              <UserListBox
-                userList={chat.participantOtherUsers}
-                calling={calling}
-                callUser={handleCallUser}
-                cancelCall={handleCancelCall}
-                isCallAcceptedTab={callAcceptedTab}
-              />
-            </Col>
-          </Row >
-        </>
-      )}
-
+      {
+        renderPage()
+      }
 
       {/* <div className="grid">
         {stream ? (

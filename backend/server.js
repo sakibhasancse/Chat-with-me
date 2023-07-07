@@ -74,18 +74,18 @@ io.on('connection', (socket) => {
   });
 
   socket.conn.on("close", (reason) => {
-    // console.log("upgraded reason", reason); // prints "websocket"
+    console.log("upgraded reason", reason); // prints "websocket"
     // called when the underlying connection is closed
   });
 
   io.use((socket, next) => {
     // console.log('sss', socket.request)
     next();
-
   });
   socket.on("disconnecting", (reason) => {
-    // console.log({ reason })
+    console.log({ reason })
     for (const room of socket.rooms) {
+      console.log({ room })
       if (room !== socket.id) {
         socket.to(room).emit("user has left", socket.id);
       }
@@ -140,9 +140,19 @@ io.on('connection', (socket) => {
     socket.broadcast.emit("updateUserMedia", { type, currentMediaStatus });
   });
 
+  socket.on("cancelCall", (data) => {
+    console.log('call cancel', data)
+    io.to(`userId-${data?.toUserId}`).emit("cancelCall");
+  });
+
+  socket.on("declineCall", (data) => {
+    console.log('call decline', data)
+    io.to(`userId-${data?.toUserId}`).emit("declineCall");
+  });
+
   socket.on("endCall", (data) => {
     console.log('call end', data)
-    io.to(data.id).emit("endCall");
+    io.to(`userId-${data?.toUserId}`).emit("endCall");
   });
 })
 export default app

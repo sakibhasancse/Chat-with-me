@@ -6,8 +6,8 @@ import Avatar from "antd/es/avatar/avatar"
 import VideoOff from "../../assets/images/video-off.svg";
 import { CallContext } from "../../context/callContext";
 
-const UserListBox = ({ userList = [], callUser, calling = false, cancelCall, isCallAcceptedTab = false }) => {
-  const { call = {}, userVideo, userVdoStatus, userMicStatus, currentChatId } = useContext(CallContext);
+const UserListBox = ({ userList = [], callUser, calling = false, handleCancelCall, isCallAcceptedTab = false }) => {
+  const { call = {}, userVideo, userVdoStatus, userMicStatus, currentChatId, leaveCall } = useContext(CallContext);
   console.log({ userList, call, isCallAcceptedTab, userVideo, calling, currentChatId })
 
   const handleFullScreen = (event) => {
@@ -34,7 +34,7 @@ const UserListBox = ({ userList = [], callUser, calling = false, cancelCall, isC
          { userList.map(user => {
         console.log("test", call)
            return ( */}
-      <div class="card" style={{ minHeight: 400 }}>
+      <div class="card" style={{ minHeight: 400, maxHeight: "400px" }}>
 
         {call?.callAccepted && !call?.callEnded && (
           <div className="card2" style={{ textAlign: "center" }} id="video2">
@@ -90,9 +90,10 @@ const UserListBox = ({ userList = [], callUser, calling = false, cancelCall, isC
                 aria-hidden="true"
                 aria-label="microphone muted"
               >
-
               </i>
             )}
+            <Button type="primary" danger onClick={leaveCall}>Leave call</Button>
+
           </div>
         )}
 
@@ -123,7 +124,7 @@ const UserListBox = ({ userList = [], callUser, calling = false, cancelCall, isC
             {calling ? (
               <>
                 Calling ...
-                      <Button danger onClick={() => cancelCall()}>
+                      <Button danger onClick={handleCancelCall}>
                   Cancel call
                    </Button>
               </>

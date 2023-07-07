@@ -25,6 +25,16 @@ const CallProvider = ({ children }) => {
 
   const [call, setCall] = useState({})
 
+  const [calling, setCalling] = useState(false)
+
+  // Status of call page
+  const [endCall, setEndCall] = useState(false)
+  const [cancelCall, setCancelCall] = useState(false)
+
+
+  // local state
+  const [otherUserIds, setOtherUserIds] = useState([])
+
   const myVideo = useRef(null);
   const connectionRef = useRef();
 
@@ -76,15 +86,29 @@ const CallProvider = ({ children }) => {
       }
     });
 
+    socket.on("declineCall", () => {
+      console.log("call declineCall")
+      setCalling(false)
+      setCancelCall(true)
+      setCall({})
+    })
+
+    socket.on("cancelCall", () => {
+      console.log("call cancelCall")
+      setCall({})
+    })
+
     socket.on("endCall", () => {
-      window.location.reload();
+      console.log("end call")
+      setEndCall(true)
+      setCall({})
+      // window.location.reload();
     });
   }, [])
 
 
   const callUser = (participantOtherUsers, currentChatId) => {
     try {
-
       const toUserIds = participantOtherUsers.map((participantOtherUser) => participantOtherUser._id)
       console.log({ toUserIds })
       const peer = new Peer({ initiator: true, trickle: false, stream })
@@ -144,13 +168,19 @@ const CallProvider = ({ children }) => {
       })
       connectionRef.current = peer;
       console.log(connectionRef.current);
-
+      setOtherUserIds(toUserIds)
     } catch (error) {
       console.log("Error in call user", error)
     }
   }
 
+  const resetAll = () => {
+    setEndCall(false)
+    setCancelCall(false)
+  }
+
   const answerCall = () => {
+    resetAll()
     setCall(oldInfo => ({ ...oldInfo, callAccepted: true }))
     console.log({ call })
     const peer = new Peer({ initiator: false, trickle: false, stream });
@@ -194,15 +224,25 @@ const CallProvider = ({ children }) => {
 
   }
 
+
+
   const leaveCall = () => {
     setCall(oldCall => ({ ...oldCall, callEnded: true }));
+    console.log({ call, otherUserIds })
+    socket.emit("endCall", { toUserId: call?.fromUserId || otherUserIds[0] });
+    setEndCall(true)
     connectionRef.current.destroy();
-    socket.emit("endCall", { id: call.fromUserId });
-    window.location.reload();
+    // window.location.reload();
   }
 
-  const cancelCall = () => {
-    socket.emit("endCall", { id: call.fromUserId });
+  const handlerCancelCall = () => {
+    socket.emit("cancelCall", { toUserId: otherUserIds[0] });
+    setCancelCall(true)
+  }
+
+  const handlerDeclineCall = () => {
+    console.log('declineCall', { call })
+    socket.emit("declineCall", { toUserId: call.fromUserId });
   }
 
   return (
@@ -225,7 +265,12 @@ const CallProvider = ({ children }) => {
       screenShare,
       setScreenShare,
       connectionRef,
-      cancelCall
+      handlerCancelCall,
+      handlerDeclineCall,
+      endCall, setEndCall,
+      cancelCall, setCancelCall,
+      calling, setCalling,
+      resetAll
     }}>
       {children}
     </CallContext.Provider>
