@@ -12,19 +12,20 @@ const VideoBox = ({ isCallAcceptedTab }) => {
 
   }
   useEffect(() => {
-    // if (!myVideo?.current) {
+    // if (!stream) {
     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then((currentStream) => {
         console.log('c', currentStream)
         setStream(currentStream);
-        myVideo.current.srcObject = currentStream;
+        if (myVideo.current) myVideo.current.srcObject = currentStream;
+        myVideo.current = currentStream;
       }).catch(err => {
         console.log({ err })
       })
     // }
-
+    console.log("!!stream ....")
   }, [])
-  console.log({ call, myVdoStatus, myVideo })
+  console.log({ call, myVdoStatus, myVideo, stream })
   return (
     <div class="card" style={{ minHeight: 400 }}>
       {

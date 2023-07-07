@@ -24,7 +24,6 @@ const ChatBox = () => {
     const currentChatId = pathname.split('/')[2] || ''
     if (!size(messages) && currentChatId) {
       getMessages(currentChatId).then(response => {
-        console.log({ response })
         if (size(response)) {
           setMessages(response)
         }

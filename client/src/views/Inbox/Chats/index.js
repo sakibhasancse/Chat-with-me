@@ -47,8 +47,7 @@ const Chats = () => {
 
 
   useEffect(() => {
-    console.log({ chatList })
-    return () => getChatListAndDocuments();
+    getChatListAndDocuments();
   }, []);
 
   return (

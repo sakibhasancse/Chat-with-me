@@ -3,7 +3,6 @@ import { apiRequest } from "../../services"
 export const getChatList = async (queryPath = '') => {
   let path = "/chat"
   if (queryPath) path = path + queryPath
-  console.log({ path, queryPath })
   const response = await apiRequest.get(path)
   console.log({ response })
   return response || {}

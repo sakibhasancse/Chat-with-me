@@ -16,7 +16,7 @@ const CallProvider = ({ children }) => {
   const [userVdoStatus, setUserVdoStatus] = useState();
   const [userMicStatus, setUserMicStatus] = useState();
   const [otherUsers, setOtherUsers] = useState([])
-  const userVideo = useRef()
+  const userVideo = useRef(null)
 
   // my status 
   const [myMicStatus, setMyMicStatus] = useState(true);
@@ -25,7 +25,7 @@ const CallProvider = ({ children }) => {
 
   const [call, setCall] = useState({})
 
-  const myVideo = useRef();
+  const myVideo = useRef(null);
   const connectionRef = useRef();
 
   useEffect(() => {
@@ -34,13 +34,12 @@ const CallProvider = ({ children }) => {
         .then((currentStream) => {
           console.log('c', currentStream)
           setStream(currentStream);
-          myVideo.current.srcObject = currentStream;
-          console.log('ssss', userVideo, myVideo)
+          if (myVideo.current) myVideo.current.srcObject = currentStream;
         }).catch(err => {
           console.log({ err })
         })
     } catch (error) {
-      console.log('ss', { error })
+      console.log({ error })
     }
 
     socket.emit("connection", { data: user?.userId, s: 'ss' });
@@ -83,58 +82,72 @@ const CallProvider = ({ children }) => {
   }, [])
 
 
-  const callUser = (currentUser = {}) => {
-    const otherUser = chatList.find(chatItem => chatItem._id === currentChatId)
-    const peer = new Peer({ initiator: true, trickle: false, stream })
-    console.log('callUser', {
-      stream
-    })
-    peer.on("signal", (data) => {
-      console.log('ans')
-      socket.emit("callUser", {
-        toUserId: otherUser.participantOtherUsers[0]?._id,
+  const callUser = (participantOtherUsers, currentChatId) => {
+    try {
+
+      const toUserIds = participantOtherUsers.map((participantOtherUser) => participantOtherUser._id)
+      console.log({ toUserIds })
+      const peer = new Peer({ initiator: true, trickle: false, stream })
+
+      console.log('callUser', {
+        toUserId: toUserIds[0],
         chatId: currentChatId,
         fromUserId: user.userId,
-        signalData: data,
         name: user.name,
+        toUserIds: toUserIds
+      })
+
+      peer.on("signal", (data) => {
+        console.log('ans')
+        socket.emit("callUser", {
+          toUserId: toUserIds[0],
+          chatId: currentChatId,
+          fromUserId: user.userId,
+          signalData: data,
+          name: user.name,
+          toUserIds: toUserIds
+        });
+      })
+
+
+      socket.on("callAccepted", ({ signalData, userName, name }) => {
+        console.log('callAccepted', userName, name, signalData)
+        setCall(oldInfo => ({ ...oldInfo, callAccepted: true, name, userName }));
+        peer.signal(signalData);
+
+        socket.emit("updateMyMedia", {
+          type: "both",
+          currentMediaStatus: [myMicStatus, myVdoStatus],
+        });
       });
-    })
-
-
-    socket.on("callAccepted", ({ signalData, userName, name }) => {
-      console.log('callAccepted', userName, name, signalData)
-      setCall(oldInfo => ({ ...oldInfo, callAccepted: true, name, userName }));
-      peer.signal(signalData);
-
-      socket.emit("updateMyMedia", {
-        type: "both",
-        currentMediaStatus: [myMicStatus, myVdoStatus],
+      console.log('stream')
+      peer.on("stream", (currentStream) => {
+        console.log('stream, from ans call', currentStream)
+        userVideo.current.srcObject = currentStream;
       });
-    });
-    console.log('stream')
-    peer.on("stream", (currentStream) => {
-      console.log('stream, from ans call', currentStream)
-      userVideo.current.srcObject = currentStream;
-    });
-    console.log('end stream')
+      console.log('end stream')
 
-    // peer.on('data', data => {
-    //   console.log('Received a message from the remote peer')
-    // })
-    console.log('connect')
-    peer.on('connect', data => {
-      console.log('Successfully connected to user', data)
-    })
-    console.log('track')
-    peer.on('track', (track, stream) => {
-      console.log('Successfully connected to user track')
-    })
-    console.log('error')
-    peer.on('error', (err) => {
-      console.log('Error connected to user track', err)
-    })
-    connectionRef.current = peer;
-    console.log(connectionRef.current);
+      // peer.on('data', data => {
+      //   console.log('Received a message from the remote peer')
+      // })
+      console.log('connect')
+      peer.on('connect', data => {
+        console.log('Successfully connected to user', data)
+      })
+      console.log('track')
+      peer.on('track', (track, stream) => {
+        console.log('Successfully connected to user track')
+      })
+      console.log('error')
+      peer.on('error', (err) => {
+        console.log('Error connected to user track', err)
+      })
+      connectionRef.current = peer;
+      console.log(connectionRef.current);
+
+    } catch (error) {
+      console.log("Error in call user", error)
+    }
   }
 
   const answerCall = () => {
@@ -151,11 +164,6 @@ const CallProvider = ({ children }) => {
         myMediaStatus: [myMicStatus, myVdoStatus],
       });
     });
-    peer.on("stream", (currentStream) => {
-      console.log('stream, from receive call', currentStream)
-      userVideo.current.srcObject = currentStream
-    });
-
     peer.signal(call.signal);
     connectionRef.current = peer;
 
@@ -165,6 +173,13 @@ const CallProvider = ({ children }) => {
     peer.on('connect', data => {
       console.log('Successfully connected to user')
     })
+    peer.on("stream", (currentStream) => {
+      console.log('stream, from receive call', userVideo)
+      // if (userVideo.current) userVideo.current.srcObject = currentStream
+      // else
+      // userVideo.current = currentStream
+      userVideo.current.srcObject = currentStream
+    });
     peer.on('track', (track, stream) => {
       console.log('Successfully connected to user track', track, stream)
     })

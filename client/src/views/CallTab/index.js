@@ -13,11 +13,19 @@ import UserListBox from "./UserListBox";
 import VideoBox from "./VideoBox";
 import CancelCallTab from "./CancelCallTab";
 import { CallContext } from "../../context/callContext";
-
+import Avatar from "antd/es/avatar/avatar";
+import Modal from "antd/es/modal/Modal";
+import Msg_Illus from "../../assets/images/msg_illus.svg";
+import Search from "antd/es/transfer/search";
+import ScreenShare from '../../assets/images/share_screen.svg'
+import VideoIcon from "../../assets/images/video.svg";
+import VideoOff from "../../assets/images/video-off.svg";
+import InboxContext from "../../context/Inbox/inboxContext";
 
 const CallTab = () => {
-  const { stream, setChatList, leaveCall, userVideo, setMyVdoStatus, setMessages, setCurrentChatId, callUser } = useContext(CallContext);
+  const { stream, leaveCall, call, myVdoStatus, myMicStatus, userVideo, setMyVdoStatus, myVideo, callUser, answerCall } = useContext(CallContext);
   const { user } = useContext(AuthContext)
+  const { setMessages, setCurrentChatId, currentChatId, setChatList } = useContext(InboxContext)
   const [message, setMessage] = useState('')
   const [isWrongUrl, setIsWrongUrl] = useState(false)
   const [chat, setChat] = useState({})
@@ -35,8 +43,9 @@ const CallTab = () => {
 
   }
 
-  const handleCallUser = () => {
-    callUser()
+  const handleCallUser = (params, params2) => {
+    console.log({ params, params2, currentChatId })
+    callUser(chat.participantOtherUsers, currentChatId)
     setCalling(true)
   }
 
@@ -80,26 +89,29 @@ const CallTab = () => {
       } else {
         const { ig_thread_id, callAccepted } = currentPath
         getChatList(`?chatId=${ig_thread_id}`)
-          .then(response => {
-            console.log({ response })
-            if (size(response)) {
-              setChat(response[0])
-              setMessages(response[0].messages)
+          .then(({ chatList }) => {
+            if (size(chatList)) {
+              setChat(chatList[0])
+              // setMessages(chatList[0].messages)
               setCurrentChatId(ig_thread_id)
-              setChatList(response)
+              setChatList(chatList)
+              console.log("test ", ig_thread_id)
             } else setIsWrongUrl(true)
+          }).catch(err => {
+            console.log({ err })
           })
         if (callAccepted) {
+          console.log("calling index")
           setCallAcceptedTab(true)
+          answerCall()
         } else setCallAcceptedTab(false)
       }
     } catch (error) {
       console.log({ error })
       setIsWrongUrl(true)
     }
+    console.log("parent loading")
   }, [search])
-
-  console.log({ userVideo, chat })
 
   if (isWrongUrl) {
     return (
@@ -109,6 +121,8 @@ const CallTab = () => {
       </div>
     )
   }
+
+
   return (
     <section className="container">
       {canceled ? (
@@ -116,10 +130,10 @@ const CallTab = () => {
       ) : (
         <>
           <Row justify="space-around" align="middle">
-            <Col xs={24} xl={14}>
+            <Col xs={12} xl={12}>
               <VideoBox />
             </Col>
-            <Col xs={24} xl={10}>
+            <Col xs={12} xl={12}>
               <UserListBox
                 userList={chat.participantOtherUsers}
                 calling={calling}

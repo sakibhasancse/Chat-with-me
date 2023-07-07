@@ -28,7 +28,7 @@ const IncomingCall = () => {
   }
 
   const acceptUserCall = () => {
-    answerCall();
+    setShowCallingModal(false)
     handleRedirectUrl()
   }
 

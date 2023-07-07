@@ -100,7 +100,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('user-send-message', ({ name, toUserId, chatId, newMessage, fromUserId }) => {
-    // console.log('message send')
+    console.log('message send', `userId-${toUserId}`)
     socket
       .to(`userId-${toUserId}`)
       .emit('receive-message', {
@@ -117,7 +117,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on("callUser", ({ toUserId, signalData, fromUserId, name, chatId }) => {
-    // console.log({ toUserId, fromUserId, name })
+    console.log({ toUserId, fromUserId, name })
     io.to(`userId-${toUserId}`).emit("callUser", {
       signalData: signalData,
       fromUserId,

@@ -24,7 +24,7 @@ const UserProfile = () => {
   const initiateMessage = async () => {
     const conversation = await createChat(username)
     console.log({ conversation, username })
-    // if (conversation?._id) navigate.push(`/inbox/${conversation._id}`)
+    if (conversation?._id) navigate(`/inbox/${conversation._id}`)
   }
 
 

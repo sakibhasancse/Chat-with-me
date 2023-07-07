@@ -7,6 +7,10 @@ const chatSchema = new Schema(
   [
     CreatedBySchemas,
     {
+      createdBy: {
+        type: String,
+        require: true
+      },
       _id: {
         type: String
       },
