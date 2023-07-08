@@ -19,6 +19,9 @@ The app provides a video calling feature that allows users to have face-to-face 
 ### 5. Audio Calling
 In addition to video calling, users can also make audio calls to their connections. This feature is particularly useful in situations where video calling is not feasible or preferred, providing flexibility in communication options.
 
+![chatwithme gift](https://github.com/sakibhasancse/Chat-with-me/assets/57236854/bc6288c0-3a89-411c-9f06-af46b68d9e65)
+
+
 # Installation
 Clone the repository:
 
