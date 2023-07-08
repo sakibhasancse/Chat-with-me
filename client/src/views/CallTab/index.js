@@ -2,10 +2,8 @@ import React, { useState, useContext, useEffect } from "react";
 import { Row, Col } from "antd";
 import { useLocation } from 'react-router-dom'
 import queryString from 'query-string';
-import { size } from 'lodash'
+import { set, size } from 'lodash'
 
-
-import { AuthContext } from '../../context/AuthContext';
 import './call.css'
 import socket from "../../socket";
 import { getChatList } from "../../data/chat";
@@ -13,20 +11,12 @@ import UserListBox from "./UserListBox";
 import VideoBox from "./VideoBox";
 import CancelCallTab from "./CancelCallTab";
 import { CallContext } from "../../context/callContext";
-import Avatar from "antd/es/avatar/avatar";
-import Modal from "antd/es/modal/Modal";
-import Msg_Illus from "../../assets/images/msg_illus.svg";
-import Search from "antd/es/transfer/search";
-import ScreenShare from '../../assets/images/share_screen.svg'
-import VideoIcon from "../../assets/images/video.svg";
-import VideoOff from "../../assets/images/video-off.svg";
 import InboxContext from "../../context/Inbox/inboxContext";
 import EndCallTab from "./EndCall";
 
 const CallTab = () => {
-  const { stream, handlerCancelCall, calling, setCalling, call, myVdoStatus, myMicStatus, userVideo, setMyVdoStatus, myVideo, callUser, answerCall, endCall } = useContext(CallContext);
-  const { user } = useContext(AuthContext)
-  const { setMessages, setCurrentChatId, currentChatId, setChatList } = useContext(InboxContext)
+  const { stream, handlerCancelCall, calling, setCalling, setMyVdoStatus, callUser, answerCall, endCall } = useContext(CallContext);
+  const { setCurrentChatId, currentChatId, setChatList } = useContext(InboxContext)
   const [message, setMessage] = useState('')
   const [isWrongUrl, setIsWrongUrl] = useState(false)
   const [chat, setChat] = useState({})
@@ -35,6 +25,7 @@ const CallTab = () => {
   const [callAcceptedTab, setCallAcceptedTab] = useState(false)
 
   const [isChatModalVisible, setIsChatModalVisible] = useState(false)
+  const [currentRouterPath, setCurrentPath] = useState({})
 
   const handleFullScreen = () => {
 
@@ -89,6 +80,7 @@ const CallTab = () => {
       ) {
         setIsWrongUrl(true)
       } else {
+        setCurrentPath(currentPath)
         setIsWrongUrl(false)
         const { ig_thread_id, callAccepted } = currentPath
         getChatList(`?chatId=${ig_thread_id}`)
@@ -129,7 +121,7 @@ const CallTab = () => {
     if (endCall) return <EndCallTab user={chat?.participantOtherUsers && chat?.participantOtherUsers[0] || {}} />
     else if (canceled) return (<CancelCallTab user={chat?.participantOtherUsers && chat?.participantOtherUsers[0] || {}} />)
     else return (
-      <>
+      <div style={{ minHeight: "500px" }}>
         <Row justify="space-around" align="middle">
           <Col xs={12} xl={12}>
             <VideoBox />
@@ -141,10 +133,11 @@ const CallTab = () => {
               callUser={handleCallUser}
               handleCancelCall={handleCancelCall}
               isCallAcceptedTab={callAcceptedTab}
+              currentRouterPath={currentRouterPath}
             />
           </Col>
         </Row >
-      </>
+      </div>
     )
   }
 

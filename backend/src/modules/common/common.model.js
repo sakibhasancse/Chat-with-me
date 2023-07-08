@@ -11,7 +11,6 @@ export const Id = new mongoose.Schema({
 export const CreatedBySchemas = new mongoose.Schema({
   createdBy: {
     type: String,
-    index: true,
     immutable: true,
     default: 'SYSTEM'
   }

@@ -24,15 +24,15 @@ export const getPosts = async (req, res, next) => {
     let posts = []
     const searchQuery = postHelper.postsSearchQuery({ keyword, category: categoryInfo?._id })
     const options = { limit, skip, sort }
-    if (userId) {
-      posts = await postHelper.getPostsWithOtherInfo({
-        query: searchQuery,
-        userId,
-        options
-      })
-    } else {
-      posts = await postHelper.getPosts(searchQuery, options)
-    }
+    // if (userId) {
+    posts = await postHelper.getPostsWithOtherInfo({
+      query: searchQuery,
+      userId,
+      options
+    })
+    // } else {
+    //   posts = await postHelper.getPosts(searchQuery, options)
+    // }
     const totalDocuments = await postHelper.getPostsCount(searchQuery)
 
     const totalPages = Math.ceil(totalDocuments / limit)

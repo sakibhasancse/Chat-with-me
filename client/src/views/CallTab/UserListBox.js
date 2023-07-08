@@ -6,7 +6,7 @@ import Avatar from "antd/es/avatar/avatar"
 import VideoOff from "../../assets/images/video-off.svg";
 import { CallContext } from "../../context/callContext";
 
-const UserListBox = ({ userList = [], callUser, calling = false, handleCancelCall, isCallAcceptedTab = false }) => {
+const UserListBox = ({ userList = [], callUser, calling = false, handleCancelCall, isCallAcceptedTab = false, currentRouterPath }) => {
   const { call = {}, userVideo, userVdoStatus, userMicStatus, currentChatId, leaveCall } = useContext(CallContext);
   console.log({ userList, call, isCallAcceptedTab, userVideo, calling, currentChatId })
 
@@ -131,7 +131,7 @@ const UserListBox = ({ userList = [], callUser, calling = false, handleCancelCal
             ) : (
               <>
                 Ready to join?
-                      <Button type="primary" shape="round" onClick={() => callUser(userList[0], currentChatId)}>
+                      <Button type="primary" shape="round" onClick={() => callUser(userList[0], currentChatId, currentRouterPath)}>
                   Join call
                  </Button>
               </>

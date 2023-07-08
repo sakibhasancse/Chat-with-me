@@ -36,7 +36,7 @@ export const createChat = async (req, res, next) => {
           }]
       }
     })
-
+    console.log({ alreadyExistsUser, userId: body.userId, userI2d: user.userId })
     if (alreadyExistsUser) {
       return res.status(200).json(alreadyExistsUser)
     }

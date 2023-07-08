@@ -26,10 +26,12 @@ const Chats = () => {
     setLoading(true);
     // `/chat?skip=${currentSkip || skip}&limit=10`
     const response = await getChatList()
+    console.log('calling 111')
     if (size(response)) {
       console.log({ response })
       setTotalDocuments(response.totalDocuments)
-      setChatList((oldChatList) => [...oldChatList, ...response.chatList]);
+      if (!skip) setChatList(response.chatList);
+      else setChatList((oldChatList) => [...oldChatList, ...response.chatList]);
     }
     setLoading(false);
   }
@@ -47,6 +49,7 @@ const Chats = () => {
 
 
   useEffect(() => {
+    console.log('calling 1')
     getChatListAndDocuments();
   }, []);
 
