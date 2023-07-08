@@ -9,7 +9,7 @@ import { useAuth } from "../../context/AuthContext";
 const RightMenu = ({ mode }) => {
   const auth = useAuth();
   const navigator = useNavigate()
-  console.log({ auth })
+
   return (
     <>
       {

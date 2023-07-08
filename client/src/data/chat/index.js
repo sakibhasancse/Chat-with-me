@@ -3,7 +3,6 @@ import { apiRequest } from "../../services"
 export const getChatList = async (queryPath = '') => {
   let path = "/chat"
   if (queryPath) path = path + queryPath
-  console.log({ path, queryPath })
   const response = await apiRequest.get(path)
   console.log({ response })
   return response || {}
@@ -19,7 +18,7 @@ export const createChat = async (userId) => {
 
 export const getMessages = async (chatId) => {
   const response = await apiRequest.get(`/message?chatId=${chatId}`)
-  return response?.data || {}
+  return response || {}
 }
 
 export const sendMessage = async (chatId, content) => {
@@ -28,7 +27,7 @@ export const sendMessage = async (chatId, content) => {
     chatId
   })
   console.log({ response })
-  return response?.data || {}
+  return response || {}
 }
 
 export const removeMessage = async (chatId, content) => {

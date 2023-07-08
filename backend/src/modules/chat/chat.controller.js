@@ -36,12 +36,12 @@ export const createChat = async (req, res, next) => {
           }]
       }
     })
-
+    console.log({ alreadyExistsUser, userId: body.userId, userI2d: user.userId })
     if (alreadyExistsUser) {
       return res.status(200).json(alreadyExistsUser)
     }
 
-    const newChat = {
+    const newChat = new ChatCollection({
       createdBy: user.userId,
       participants: [
         {
@@ -51,12 +51,13 @@ export const createChat = async (req, res, next) => {
           userId: user.userId
         }
       ]
-    }
-    const chat = await ChatCollection.create(newChat)
+    })
+    const chat = await newChat.save()
     if (!_.size(chat)) throw new CustomError(400, 'Failed to create the chat')
 
     res.status(201).json(chat)
   } catch (error) {
+    console.log({ error })
     return next(error)
   }
 }
@@ -65,7 +66,6 @@ export const GetChats = async (req, res, next) => {
   try {
     const { user = {}, query = {} } = req
     const { limit = 10, skip = 0, messageLimit = 10, sort = { createdAt: -1 } } = query
-    console.log({ query })
     const matchQuery = {
       participants: {
         $elemMatch: {
@@ -74,7 +74,7 @@ export const GetChats = async (req, res, next) => {
       }
     }
 
-    if (query?.chatId) matchQuery._id = mongoose.Types.ObjectId(query.chatId)
+    if (query?.chatId) matchQuery._id = query.chatId
     const chatList = await ChatCollection.aggregate([{
       $match: matchQuery
     },
@@ -190,8 +190,6 @@ export const GetChats = async (req, res, next) => {
       chatList,
       totalDocuments
     }
-    chatList.totalDocuments =
-      console.log({ user, chatList })
     res.status(200).json(responseData)
   } catch (error) {
     return next(error)

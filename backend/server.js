@@ -74,18 +74,18 @@ io.on('connection', (socket) => {
   });
 
   socket.conn.on("close", (reason) => {
-    // console.log("upgraded reason", reason); // prints "websocket"
+    console.log("upgraded reason", reason); // prints "websocket"
     // called when the underlying connection is closed
   });
 
   io.use((socket, next) => {
     // console.log('sss', socket.request)
     next();
-
   });
   socket.on("disconnecting", (reason) => {
-    // console.log({ reason })
+    console.log({ reason })
     for (const room of socket.rooms) {
+      console.log({ room })
       if (room !== socket.id) {
         socket.to(room).emit("user has left", socket.id);
       }
@@ -100,7 +100,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('user-send-message', ({ name, toUserId, chatId, newMessage, fromUserId }) => {
-    // console.log('message send')
+    console.log('message send', `userId-${toUserId}`)
     socket
       .to(`userId-${toUserId}`)
       .emit('receive-message', {
@@ -117,7 +117,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on("callUser", ({ toUserId, signalData, fromUserId, name, chatId }) => {
-    // console.log({ toUserId, fromUserId, name })
+    console.log({ toUserId, fromUserId, name })
     io.to(`userId-${toUserId}`).emit("callUser", {
       signalData: signalData,
       fromUserId,
@@ -140,9 +140,19 @@ io.on('connection', (socket) => {
     socket.broadcast.emit("updateUserMedia", { type, currentMediaStatus });
   });
 
+  socket.on("cancelCall", (data) => {
+    console.log('call cancel', data)
+    io.to(`userId-${data?.toUserId}`).emit("cancelCall");
+  });
+
+  socket.on("declineCall", (data) => {
+    console.log('call decline', data)
+    io.to(`userId-${data?.toUserId}`).emit("declineCall");
+  });
+
   socket.on("endCall", (data) => {
     console.log('call end', data)
-    io.to(data.id).emit("endCall");
+    io.to(`userId-${data?.toUserId}`).emit("endCall");
   });
 })
 export default app

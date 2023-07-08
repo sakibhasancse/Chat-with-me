@@ -2,10 +2,8 @@ import React, { useState, useContext, useEffect } from "react";
 import { Row, Col } from "antd";
 import { useLocation } from 'react-router-dom'
 import queryString from 'query-string';
-import { size } from 'lodash'
+import { set, size } from 'lodash'
 
-
-import { AuthContext } from '../../context/AuthContext';
 import './call.css'
 import socket from "../../socket";
 import { getChatList } from "../../data/chat";
@@ -13,19 +11,21 @@ import UserListBox from "./UserListBox";
 import VideoBox from "./VideoBox";
 import CancelCallTab from "./CancelCallTab";
 import { CallContext } from "../../context/callContext";
-
+import InboxContext from "../../context/Inbox/inboxContext";
+import EndCallTab from "./EndCall";
 
 const CallTab = () => {
-  const { stream, setChatList, leaveCall, userVideo, setMyVdoStatus, setMessages, setCurrentChatId, callUser } = useContext(CallContext);
-  const { user } = useContext(AuthContext)
+  const { stream, handlerCancelCall, calling, setCalling, setMyVdoStatus, callUser, answerCall, endCall } = useContext(CallContext);
+  const { setCurrentChatId, currentChatId, setChatList } = useContext(InboxContext)
   const [message, setMessage] = useState('')
   const [isWrongUrl, setIsWrongUrl] = useState(false)
   const [chat, setChat] = useState({})
-  const [calling, setCalling] = useState(false)
+
   const [canceled, setCancelled] = useState(false)
   const [callAcceptedTab, setCallAcceptedTab] = useState(false)
 
   const [isChatModalVisible, setIsChatModalVisible] = useState(false)
+  const [currentRouterPath, setCurrentPath] = useState({})
 
   const handleFullScreen = () => {
 
@@ -35,15 +35,17 @@ const CallTab = () => {
 
   }
 
-  const handleCallUser = () => {
-    callUser()
+  const handleCallUser = (params, params2) => {
+    console.log({ params, params2, currentChatId })
+    callUser(chat.participantOtherUsers, currentChatId)
     setCalling(true)
   }
 
   const handleCancelCall = () => {
-    leaveCall()
+    console.log("cancel calling ...")
     setCalling(false)
     setCancelled(true)
+    handlerCancelCall()
   }
 
   const handleMessage = (value) => {
@@ -78,60 +80,72 @@ const CallTab = () => {
       ) {
         setIsWrongUrl(true)
       } else {
+        setCurrentPath(currentPath)
+        setIsWrongUrl(false)
         const { ig_thread_id, callAccepted } = currentPath
         getChatList(`?chatId=${ig_thread_id}`)
-          .then(response => {
-            console.log({ response })
-            if (size(response)) {
-              setChat(response[0])
-              setMessages(response[0].messages)
+          .then(({ chatList }) => {
+            if (size(chatList)) {
+              setChat(chatList[0])
+              // setMessages(chatList[0].messages)
               setCurrentChatId(ig_thread_id)
-              setChatList(response)
+              setChatList(chatList)
+              console.log("test ", ig_thread_id)
             } else setIsWrongUrl(true)
+          }).catch(err => {
+            console.log({ err })
           })
         if (callAccepted) {
+          console.log("calling index")
           setCallAcceptedTab(true)
+          answerCall()
         } else setCallAcceptedTab(false)
       }
     } catch (error) {
       console.log({ error })
       setIsWrongUrl(true)
     }
+    console.log("parent loading")
   }, [search])
-
-  console.log({ userVideo, chat })
 
   if (isWrongUrl) {
     return (
-      <div style={{ padding: '20px', paddingTop: '40px' }}> Sorry, this page isn't available.
+      <div style={{ padding: '20px', paddingTop: '40px', minHeight: "300px" }}> Sorry, this page isn't available.
         <br />
       The link you followed may be broken, or the page may have been removed.Go back to home page
       </div>
     )
   }
+
+  const renderPage = () => {
+    if (endCall) return <EndCallTab user={chat?.participantOtherUsers && chat?.participantOtherUsers[0] || {}} />
+    else if (canceled) return (<CancelCallTab user={chat?.participantOtherUsers && chat?.participantOtherUsers[0] || {}} />)
+    else return (
+      <div style={{ minHeight: "500px" }}>
+        <Row justify="space-around" align="middle">
+          <Col xs={12} xl={12}>
+            <VideoBox />
+          </Col>
+          <Col xs={12} xl={12}>
+            <UserListBox
+              userList={chat?.participantOtherUsers || {}}
+              calling={calling}
+              callUser={handleCallUser}
+              handleCancelCall={handleCancelCall}
+              isCallAcceptedTab={callAcceptedTab}
+              currentRouterPath={currentRouterPath}
+            />
+          </Col>
+        </Row >
+      </div>
+    )
+  }
+
   return (
     <section className="container">
-      {canceled ? (
-        <CancelCallTab user={chat?.participantOtherUsers[0]} />
-      ) : (
-        <>
-          <Row justify="space-around" align="middle">
-            <Col xs={24} xl={14}>
-              <VideoBox />
-            </Col>
-            <Col xs={24} xl={10}>
-              <UserListBox
-                userList={chat.participantOtherUsers}
-                calling={calling}
-                callUser={handleCallUser}
-                cancelCall={handleCancelCall}
-                isCallAcceptedTab={callAcceptedTab}
-              />
-            </Col>
-          </Row >
-        </>
-      )}
-
+      {
+        renderPage()
+      }
 
       {/* <div className="grid">
         {stream ? (

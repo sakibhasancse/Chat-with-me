@@ -19,12 +19,14 @@ const inbox = () => {
   }])
 
   return (
-    <div style={{ padding: '0px 50px', height: '100%' }}>
-      <Row>
-        <Col xs={24} sm={4} md={6} lg={8} xl={7}>
+    <div
+      style={{ padding: '0px 25px', height: '100%' }}
+    >
+      <Row justify="space-between">
+        <Col xs={10} sm={8} md={8} lg={8} xl={8}>
           <Chats setMessages={setMessages} />
         </Col>
-        <Col xs={24} sm={4} md={6} lg={8} xl={17}>
+        <Col xs={14} sm={16} md={16} lg={16} xl={16}>
           <ChatBox messages={messages} setMessages={setMessages} />
         </Col>
       </Row>
